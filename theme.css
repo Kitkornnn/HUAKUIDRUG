@@ -152,3 +152,36 @@ th{letter-spacing:.2px}
   :root:not([data-theme="light"]) :is(.card,.kpi,.panel){border-color:var(--t-aqua) !important;box-shadow:3px 3px 0 var(--t-aqua) !important}
 }
 .list .btn.small{padding:0 14px}
+
+/* ---------- หัวหน้าแรก: ป้ายสติกเกอร์ไล่สีทะเล ---------- */
+.wrap > header{
+  position:relative;overflow:hidden;isolation:isolate;
+  padding:20px 22px;margin-bottom:28px !important;border-radius:26px;
+  background:var(--t-hero);color:#fff;border:3px solid var(--t-ink);box-shadow:6px 6px 0 var(--t-ink);
+}
+.wrap > header::before{                 /* ลายดาวจาง ๆ */
+  content:"";position:absolute;inset:0;z-index:-1;background-image:var(--t-stars);background-size:120px 120px;opacity:.45;
+  animation:t-drift var(--t-bg-speed) linear infinite;
+}
+.wrap > header::after{                  /* ฟองอากาศมุมขวา */
+  content:"";position:absolute;z-index:-1;right:-26px;bottom:-34px;width:130px;height:130px;border-radius:50%;
+  background:radial-gradient(circle at 35% 35%,rgba(255,255,255,.55),rgba(255,255,255,.08) 60%);
+  box-shadow:-70px -58px 0 -46px rgba(255,255,255,.35),-118px -12px 0 -54px rgba(255,255,255,.3);
+}
+.wrap > header h1{
+  color:#fff;font-size:2rem !important;font-weight:700;letter-spacing:.3px;
+  text-shadow:3px 3px 0 var(--t-ink),-1px -1px 0 var(--t-ink),1px -1px 0 var(--t-ink),-1px 1px 0 var(--t-ink);
+}
+.wrap > header p{
+  display:inline-block;margin-top:8px !important;padding:2px 14px;border-radius:999px;
+  background:rgba(255,255,255,.92);color:var(--t-ink) !important;border:2px solid var(--t-ink);
+  font-weight:600;font-size:.92rem !important;box-shadow:2px 2px 0 var(--t-ink);
+}
+.wrap > header .logo{
+  width:72px !important;height:72px !important;background:var(--t-star) !important;color:var(--t-ink) !important;
+  transform:rotate(-8deg);animation:t-wiggle 3.2s ease-in-out infinite;
+}
+.wrap > header .logo svg{width:40px !important;height:40px !important}
+@keyframes t-wiggle{0%,100%{transform:rotate(-8deg)}50%{transform:rotate(6deg) translateY(-2px)}}
+@media (max-width:420px){.wrap > header{padding:16px}.wrap > header h1{font-size:1.55rem !important}.wrap > header .logo{width:58px !important;height:58px !important}}
+@media (prefers-reduced-motion:reduce){.wrap > header::before,.wrap > header .logo{animation:none !important}}

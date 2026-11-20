@@ -1,20 +1,16 @@
-/* mascot.js : มาสคอต 3 ตัว ถือเม็ดยาเหมือนกัน (ออกแบบขึ้นใหม่เอง ไม่ได้อิงตัวการ์ตูนใด)
-     ปลาทอง  ว่ายซ้าย–ขวาที่ด้านล่างจอ
-     กุ้ง     ไต่ขึ้นลงที่ขอบซ้าย
-     ปลาดาว  ไต่ขึ้นลงที่ขอบขวา
-   ใส่ในหน้าด้วย <script src="./mascot.js" defer></script>  ปิดได้โดยลบบรรทัดนั้น
+/* mascot.js : มาสคอต 3 ตัว ถือเม็ดยา (ออกแบบขึ้นใหม่เอง ไม่ได้อิงตัวการ์ตูนใด) ใช้เฉพาะหน้าแรก index.html
+     ปลาทอง กุ้ง ปลาดาว ว่ายอิสระทั่วจอ ถูกดึงเข้าหากลางจอเบา ๆ
+   เล่นได้: แตะ = เด้งดึ๋ง พูด และมีหัวใจ   แตะรัว 5 ครั้ง = หมุนติ้ว   ลาก = จับย้ายแล้วปล่อยให้ว่ายต่อ
 
-   กติกาห้ามบังปุ่ม (ทำ 2 ชั้น)
-   1) ทุกตัว pointer-events: none คลิก/แตะทะลุได้เสมอ
-   2) ทุก 0.15 วินาทีอ่านตำแหน่งของ ปุ่ม ลิงก์ ช่องกรอก แท็บ ป้ายกำกับ แล้วถ้ามาสคอตตัวไหน
-      (รวมกล่องคำพูด) เข้าใกล้ในระยะ 24px จะจางหายไปก่อนทับ และกลับมาเมื่อพ้น
-   ผู้ใช้ที่ตั้งค่าลดการเคลื่อนไหว จะเห็นมาสคอตนิ่งที่มุมล่าง */
+   กติกาห้ามทับปุ่ม (ตรวจทุกเฟรม)
+   - อ่านกรอบของปุ่ม ลิงก์ ช่องกรอก แท็บ หัวเว็บ กล่องหมายเหตุ ทุกเฟรม แล้วกันระยะห่าง 14px
+   - ก้าวถัดไปที่จะทับ จะไม่ถูกเดิน มาสคอตเด้งกลับแทน (ทั้งตอนว่ายเองและตอนผู้ใช้ลาก)
+   - ถ้าหน้าเปลี่ยนจนทับอยู่แล้ว (ย่อจอ เลื่อนหน้า) ย้ายไปจุดว่างที่ใกล้ที่สุดทันที ไม่มีจุดว่างก็ซ่อน
+   - กล่องคำพูดแสดงเฉพาะเมื่อไม่ทับปุ่ม หัวใจลอยอยู่ในกรอบของตัวมาสคอตเท่านั้น
+   ผู้ใช้ที่ตั้งค่าลดการเคลื่อนไหว: มาสคอตไม่ว่ายเอง แต่ยังแตะและลากได้ */
 (function () {
   if (window.__mascot) return; window.__mascot = true;
-  var NS = 'http://www.w3.org/2000/svg', INK = '#12344d', PAD = 24;
-  var SAY = ['ตรวจวันหมดอายุทุกครั้งนะ', 'ถามรหัสผู้ป่วยให้ครบก่อนจ่าย', 'ยาใกล้หมดอายุ จ่ายก่อนนะ',
-             'ข้อมูลจำลองนะ ห้ามใส่ชื่อจริง', 'ว่ายมาตรวจสต็อกค้าบ', 'เลือกล็อตให้ระบบ ไม่ต้องเลือกเอง'];
-
+  var NS = 'http://www.w3.org/2000/svg', INK = '#12344d', PAD = 14;
   /* ---------- วาด SVG ---------- */
   function s(tag, a, par) { var e = document.createElementNS(NS, tag); for (var k in a) e.setAttribute(k, a[k]); if (par) par.appendChild(e); return e; }
   var ST = { stroke: INK, 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
@@ -90,8 +86,11 @@
   /* ---------- CSS ---------- */
   var css = document.createElement('style');
   css.textContent =
-    '.mc{position:fixed;left:0;top:0;z-index:60;pointer-events:none;will-change:transform,opacity;opacity:0;transition:opacity .18s}' +
-    '.mc svg{overflow:visible}.mc.show{opacity:1}.mc .sp{width:var(--w);height:var(--h);transition:transform .35s}.mc .sp.left{transform:scaleX(-1)}' +
+    '.mc{position:fixed;left:0;top:0;z-index:60;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}' +
+    '.mc.drag{cursor:grabbing}.mc.off{visibility:hidden;pointer-events:none}' +
+    '.mc svg{overflow:visible;display:block}.mc .fx{width:var(--w);height:var(--h)}.mc .sp{width:100%;height:100%;transition:transform .35s}.mc .sp.left{transform:scaleX(-1)}' +
+    '.mc .fx.boing{animation:mc-boing .6s ease}.mc .fx.spin{animation:mc-spin .9s ease}.mc .fx.pop{animation:mc-pop .35s ease}' +
+    '.mc.drag .fx{transform:scale(1.12) rotate(-6deg)}' +
     '.mc .mc-tail{animation:mc-wag .55s ease-in-out infinite alternate}' +
     '.mc .mc-pill{animation:mc-pill 1.1s ease-in-out infinite alternate}' +
     '.mc .mc-pill2{animation:mc-pill2 1.1s ease-in-out infinite alternate}' +
@@ -99,11 +98,13 @@
     '.mc .mc-ant{animation:mc-ant 1.4s ease-in-out infinite alternate;transform-origin:28px 16px}' +
     '.mc .mc-star{animation:mc-tw 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}' +
     '.mc .mc-eye{animation:mc-blink 4.5s infinite;transform-box:fill-box;transform-origin:center}' +
-    '.mc .say{position:absolute;bottom:calc(var(--h) + 8px);left:50%;transform:translateX(-50%) scale(.8);opacity:0;white-space:nowrap;' +
+    '.mc .say{position:absolute;bottom:calc(var(--h) + 8px);left:50%;transform:translateX(-50%) scale(.8);opacity:0;white-space:nowrap;pointer-events:none;' +
     'background:#fff;color:' + INK + ';border:2.5px solid ' + INK + ';border-radius:16px;padding:4px 14px;font:600 15px/1.5 "Noto Sans Thai",sans-serif;' +
-    'box-shadow:3px 3px 0 ' + INK + ';transition:opacity .25s,transform .25s}' +
-    '.mc.sideL .say{left:0;transform:scale(.8);transform-origin:left bottom}.mc.sideR .say{left:auto;right:0;transform:scale(.8);transform-origin:right bottom}' +
-    '.mc .say.on{opacity:1;transform:translateX(-50%) scale(1)}.mc.sideL .say.on,.mc.sideR .say.on{transform:scale(1)}' +
+    'box-shadow:3px 3px 0 ' + INK + ';transition:opacity .2s,transform .2s}' +
+    '.mc .say.on{opacity:1;transform:translateX(-50%) scale(1)}' +
+    '.mc .say.al{left:0;transform:scale(.8);transform-origin:left bottom}.mc .say.ar{left:auto;right:0;transform:scale(.8);transform-origin:right bottom}' +
+    '.mc .say.dn{bottom:auto;top:calc(var(--h) + 8px)}.mc .say.al.on,.mc .say.ar.on{transform:scale(1)}' +
+    '.mc .ht{position:absolute;pointer-events:none;font-size:18px;color:#f06a9b;text-shadow:1px 1px 0 ' + INK + ';animation:mc-heart .9s ease-out forwards}' +
     '@keyframes mc-wag{from{transform:rotate(-12deg)}to{transform:rotate(12deg)}}' +
     '@keyframes mc-pill{from{transform:translate(92px,62px) rotate(-32deg)}to{transform:translate(92px,59px) rotate(-22deg)}}' +
     '@keyframes mc-pill2{from{transform:translateY(0)}to{transform:translateY(-3px)}}' +
@@ -111,95 +112,218 @@
     '@keyframes mc-ant{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}' +
     '@keyframes mc-tw{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.25) rotate(12deg)}}' +
     '@keyframes mc-blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}' +
+    '@keyframes mc-boing{0%{transform:scale(1)}30%{transform:scale(1.25,.8)}55%{transform:scale(.85,1.2) translateY(-6px)}80%{transform:scale(1.06,.95)}100%{transform:scale(1)}}' +
+    '@keyframes mc-spin{from{transform:rotate(0)}to{transform:rotate(720deg)}}' +
+    '@keyframes mc-pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}' +
+    '@keyframes mc-heart{from{transform:translateY(0) scale(.6);opacity:1}to{transform:translateY(-28px) scale(1.1);opacity:0}}' +
+    '@media (prefers-reduced-motion:reduce){.mc *{animation:none !important}}' +
     '@media print{.mc{display:none}}';
   document.head.appendChild(css);
 
-  /* ---------- ตัวช่วยตรวจการทับปุ่ม ---------- */
-  var SEL = 'a,button,input,select,textarea,summary,label,[role=button],[role=tab],[tabindex]:not([tabindex="-1"])';
-  var rects = [];
-  function refreshRects() {
-    var vw = innerWidth, vh = innerHeight, out = [], els = document.querySelectorAll(SEL);
+  /* ---------- สิ่งที่ห้ามทับ ---------- */
+  var OBST = 'a,button,input,select,textarea,summary,label,[role=button],[role=tab],[tabindex]:not([tabindex="-1"]),.wrap > header,.note,footer';
+  var obst = [];
+  function readObst() {
+    obst = [];
+    var els = document.querySelectorAll(OBST);
     for (var i = 0; i < els.length; i++) {
+      if (els[i].closest('.mc')) continue;
       var r = els[i].getBoundingClientRect();
-      if (r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < vh && r.right > 0 && r.left < vw) out.push(r);
+      if (r.width > 0 && r.height > 0) obst.push(r);
     }
-    rects = out;
   }
-  function hits(b) {
-    for (var i = 0; i < rects.length; i++) {
-      var r = rects[i];
-      if (b.left < r.right + PAD && b.right > r.left - PAD && b.top < r.bottom + PAD && b.bottom > r.top - PAD) return true;
+  function free(l, t, w, h) {                          /* กรอบนี้อยู่ในจอ และห่างทุกปุ่มอย่างน้อย PAD */
+    if (l < 4 || t < 4 || l + w > innerWidth - 4 || t + h > innerHeight - 4) return false;
+    for (var i = 0; i < obst.length; i++) {
+      var r = obst[i];
+      if (l < r.right + PAD && l + w > r.left - PAD && t < r.bottom + PAD && t + h > r.top - PAD) return false;
     }
-    return false;
+    return true;
   }
-  setInterval(refreshRects, 150);
-  addEventListener('scroll', refreshRects, { passive: true, capture: true });
-  addEventListener('resize', refreshRects);
+  function freeBox(b) { return free(b.left, b.top, b.right - b.left, b.bottom - b.top); }
 
-  /* ---------- ตัวละครแต่ละตัว ---------- */
+  /* ---------- ตัวละคร ---------- */
   var reduce = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var small = function () { return innerWidth < 600; };
-  function actor(draw, w, h, ws, hs, side) {
-    var box = document.createElement('div'); box.className = 'mc' + (side ? ' side' + side : '');
+  var LINES = {
+    fish:   ['บลุ๊บ บลุ๊บ!', 'จั๊กจี้นะ!', 'ตรวจวันหมดอายุทุกครั้งนะ', 'ว่ายมาตรวจสต็อกค้าบ', 'ยาใกล้หมดอายุ จ่ายก่อนนะ'],
+    shrimp: ['ดีดตัวหนีค้าบ!', 'กุ้งไม่ใช่ของกินนะ!', 'ถามรหัสผู้ป่วยให้ครบก่อนจ่าย', 'ข้อมูลจำลองนะ ห้ามใส่ชื่อจริง'],
+    star:   ['หมุนติ้ว~', 'ดาวประจำร้านมาแล้ว', 'เลือกล็อตให้ระบบ ไม่ต้องเลือกเอง', 'กินยาให้ตรงเวลานะ']
+  };
+  var SPIN_LINE = { fish: 'เวียนหัวแล้ววว', shrimp: 'กุ้งงงหมุนนน', star: 'ดาวหมุนรอบตัวเอง!' };
+  function make(kind, draw, w, h, ws, hs, speed) {
+    var el = document.createElement('div'); el.className = 'mc off'; el.setAttribute('aria-hidden', 'true');
+    var say = document.createElement('div'); say.className = 'say';
+    var fx = document.createElement('div'); fx.className = 'fx';
     var sp = document.createElement('div'); sp.className = 'sp'; sp.appendChild(draw());
-    var say = document.createElement('div'); say.className = 'say'; say.setAttribute('aria-hidden', 'true');
-    box.appendChild(say); box.appendChild(sp); document.body.appendChild(box);
-    return { box: box, sp: sp, say: say, w: w, h: h, ws: ws, hs: hs, x: 0, y: 0, sayOff: 0, k: Math.floor(Math.random() * SAY.length) };
+    fx.appendChild(sp); el.appendChild(say); el.appendChild(fx); document.body.appendChild(el);
+    var a = { kind: kind, el: el, say: say, fx: fx, sp: sp, W: w, H: h, WS: ws, HS: hs, speed: speed,
+              x: 0, y: 0, vx: 0, vy: 0, placed: false, boost: 0, sayOff: 0, nextSay: 0, taps: [], li: 0, drag: null };
+    size(a); bindPointer(a); return a;
   }
-  function resize(a) { var sm = small(); a.cw = sm ? a.ws : a.w; a.ch = sm ? a.hs : a.h;
-    a.box.style.setProperty('--w', a.cw + 'px'); a.box.style.setProperty('--h', a.ch + 'px'); }
-  function boundsOf(a) {                               /* กรอบตัวมาสคอต รวมกล่องคำพูดถ้ากำลังแสดง */
-    var b = { left: a.x, top: a.y, right: a.x + a.cw, bottom: a.y + a.ch };
-    if (a.say.classList.contains('on')) {
-      var r = a.say.getBoundingClientRect();
-      b.left = Math.min(b.left, r.left); b.right = Math.max(b.right, r.right); b.top = Math.min(b.top, r.top);
+  function size(a) {
+    var sm = innerWidth < 600; a.w = sm ? a.WS : a.W; a.h = sm ? a.HS : a.H;
+    a.el.style.setProperty('--w', a.w + 'px'); a.el.style.setProperty('--h', a.h + 'px');
+  }
+  function put(a) { a.el.style.transform = 'translate(' + Math.round(a.x) + 'px,' + Math.round(a.y) + 'px)'; }
+  function show(a, on) { a.el.classList.toggle('off', !on); if (!on) hideSay(a); }
+
+  /* หาจุดว่าง: สุ่มหลายจุด เลือกจุดที่ใกล้จุดอ้างอิง (ค่าเริ่มต้นคือกลางจอ) */
+  function findSpot(a, px, py) {
+    var best = null, bd = 1e9, cx = px == null ? innerWidth / 2 : px, cy = py == null ? innerHeight / 2 : py;
+    for (var i = 0; i < 500; i++) {
+      var x = 4 + Math.random() * Math.max(1, innerWidth - a.w - 8), y = 4 + Math.random() * Math.max(1, innerHeight - a.h - 8);
+      if (!free(x, y, a.w, a.h)) continue;
+      var d = Math.hypot(x + a.w / 2 - cx, y + a.h / 2 - cy);
+      if (d < bd) { bd = d; best = { x: x, y: y }; }
     }
-    return b;
+    return best;
   }
-  function put(a, now) {
-    a.box.style.transform = 'translate(' + Math.round(a.x) + 'px,' + Math.round(a.y) + 'px)';
-    a.box.classList.toggle('show', !hits(boundsOf(a)));
-    if (a.nextSay && now > a.nextSay) { a.say.textContent = SAY[a.k++ % SAY.length]; a.say.classList.add('on'); a.sayOff = now + 3200; a.nextSay = now + 12000 + Math.random() * 6000; }
-    if (a.sayOff && now > a.sayOff) { a.say.classList.remove('on'); a.sayOff = 0; }
+  function randomVel(a, k) { var t = Math.random() * Math.PI * 2; a.vx = Math.cos(t) * a.speed * (k || 1); a.vy = Math.sin(t) * a.speed * (k || 1) * (a.kind === 'fish' ? .4 : 1); }
+
+  /* ---------- กล่องคำพูด ---------- */
+  function hideSay(a) { a.say.classList.remove('on'); a.sayOff = 0; }
+  /* ลองวางกล่องคำพูดหลายตำแหน่ง (บน/ล่าง × กลาง/ชิดซ้าย/ชิดขวา) ใช้ตำแหน่งแรกที่ไม่ทับปุ่ม */
+  var SAY_POS = [[], ['al'], ['ar'], ['dn'], ['dn', 'al'], ['dn', 'ar']];
+  function speak(a, text, now) {
+    a.say.textContent = text;
+    for (var i = 0; i < SAY_POS.length; i++) {
+      a.say.className = 'say ' + SAY_POS[i].join(' ');
+      var r = a.say.getBoundingClientRect(), gx = r.width * .14, gy = r.height * .14;   /* วัดตอนย่อ .8 จึงขยายเผื่อ */
+      if (freeBox({ left: r.left - gx, top: r.top - gy, right: r.right + gx, bottom: r.bottom + gy })) {
+        a.say.classList.add('on'); a.sayOff = now + 2600; return true;
+      }
+    }
+    a.say.className = 'say'; return false;
+  }
+  function sayBoxFree(a) { var r = a.say.getBoundingClientRect(); return freeBox(r); }
+
+  /* ---------- การเล่น ---------- */
+  function restart(node, cls) { node.classList.remove('boing', 'spin', 'pop'); void node.offsetWidth; node.classList.add(cls); }
+  function hearts(a) {                                  /* หัวใจลอยอยู่ในกรอบตัวมาสคอตเท่านั้น */
+    for (var i = 0; i < 3; i++) {
+      var hz = document.createElement('span'); hz.className = 'ht'; hz.textContent = '♥';
+      hz.style.left = (10 + Math.random() * (a.w - 30)) + 'px'; hz.style.top = (a.h * .45 + Math.random() * a.h * .2) + 'px';
+      hz.style.animationDelay = (i * .12) + 's';
+      a.el.appendChild(hz); setTimeout(function (n) { return function () { n.remove(); }; }(hz), 1300);
+    }
+  }
+  function onTap(a, now) {
+    a.taps = a.taps.filter(function (t) { return now - t < 2000; }); a.taps.push(now);
+    if (a.taps.length >= 5) {
+      a.taps = []; restart(a.fx, 'spin'); hideSay(a); speak(a, SPIN_LINE[a.kind], now);
+    } else {
+      restart(a.fx, 'boing'); hearts(a); hideSay(a); speak(a, LINES[a.kind][a.li++ % LINES[a.kind].length], now);
+    }
+    if (!reduce) { randomVel(a, 2.6); a.boost = now + 1200; }   /* ตกใจ ว่ายหนีเร็วขึ้นชั่วครู่ */
   }
 
-  var fish = actor(drawFish, 118, 82, 84, 58, '');
-  var shrimp = actor(drawShrimp, 58, 76, 44, 58, 'L');
-  var starfish = actor(drawStar, 66, 66, 48, 48, 'R');
-  var all = [fish, shrimp, starfish];
-  fish.nextSay = performance.now() + 4000; shrimp.nextSay = performance.now() + 8000; starfish.nextSay = performance.now() + 12000;
-  all.forEach(resize); addEventListener('resize', function () { all.forEach(resize); });
-  fish.x = 40; fish.dir = 1; shrimp.dir = 1; starfish.dir = -1; shrimp.y = 120; starfish.y = 420;
-  refreshRects();
-
-  if (reduce) {                                        /* ไม่เคลื่อนที่: วางนิ่งที่มุมล่าง */
-    document.querySelectorAll('.mc *').forEach(function (n) { n.style.animation = 'none'; });
-    var vh0 = innerHeight;
-    fish.x = innerWidth - fish.cw - 16; fish.y = vh0 - fish.ch - 12;
-    shrimp.x = 6; shrimp.y = vh0 - shrimp.ch - 12; starfish.x = innerWidth - starfish.cw - 6; starfish.y = vh0 - fish.ch - starfish.ch - 24;
-    all.forEach(function (a) { a.nextSay = 0; put(a, 0); }); setInterval(function () { all.forEach(function (a) { put(a, 0); }); }, 300);
-    return;
-  }
-
-  var t0 = performance.now(), last = t0;
-  function frame(now) {
-    var dt = Math.min(now - last, 60) / 1000; last = now;
-    var vw = innerWidth, vh = innerHeight, t = now - t0;
-    /* ปลาทอง: ซ้าย–ขวาที่ด้านล่าง */
-    fish.x += fish.dir * (small() ? 45 : 70) * dt;
-    if (fish.x > vw - fish.cw - 8) { fish.x = vw - fish.cw - 8; fish.dir = -1; }
-    if (fish.x < 8) { fish.x = 8; fish.dir = 1; }
-    fish.sp.classList.toggle('left', fish.dir < 0);
-    fish.y = vh - fish.ch - 32 - Math.sin(t / 900) * 12 - Math.sin(t / 2300) * 18;
-    /* กุ้ง: ไต่ขึ้นลงที่ขอบซ้าย  ปลาดาว: ขอบขวา */
-    [[shrimp, 4, 38], [starfish, vw - starfish.cw - 4, 30]].forEach(function (c) {
-      var a = c[0]; a.y += a.dir * c[2] * dt;
-      var lo = 8, hi = vh - a.ch - 8;
-      if (a.y > hi) { a.y = hi; a.dir = -1; } if (a.y < lo) { a.y = lo; a.dir = 1; }
-      a.x = c[1] + Math.sin(t / 1100 + (a === shrimp ? 0 : 2)) * 3;
+  function bindPointer(a) {
+    a.el.addEventListener('pointerdown', function (e) {
+      if (a.el.classList.contains('off')) return;
+      e.preventDefault(); a.el.setPointerCapture(e.pointerId);
+      a.drag = { id: e.pointerId, ox: e.clientX - a.x, oy: e.clientY - a.y, sx: e.clientX, sy: e.clientY, t: performance.now(),
+                 moved: 0, lx: a.x, ly: a.y, lt: performance.now(), vx: 0, vy: 0 };
+      a.el.classList.add('drag'); hideSay(a);
     });
-    all.forEach(function (a) { put(a, now); });
+    a.el.addEventListener('pointermove', function (e) {
+      var d = a.drag; if (!d || e.pointerId !== d.id) return;
+      d.moved = Math.max(d.moved, Math.hypot(e.clientX - d.sx, e.clientY - d.sy));
+      var tx = e.clientX - d.ox, ty = e.clientY - d.oy;
+      readObst();
+      /* ลากได้เฉพาะไปจุดที่ว่าง ทับปุ่มไม่ได้: ลองทั้งสองแกน แล้วทีละแกน */
+      if (free(tx, ty, a.w, a.h)) { a.x = tx; a.y = ty; }
+      else { if (free(tx, a.y, a.w, a.h)) a.x = tx; if (free(a.x, ty, a.w, a.h)) a.y = ty; }
+      var now = performance.now(), dt = Math.max(16, now - d.lt) / 1000;
+      d.vx = (a.x - d.lx) / dt; d.vy = (a.y - d.ly) / dt; d.lx = a.x; d.ly = a.y; d.lt = now;
+      put(a);
+    });
+    function end(e) {
+      var d = a.drag; if (!d || e.pointerId !== d.id) return;
+      a.drag = null; a.el.classList.remove('drag');
+      var now = performance.now();
+      if (d.moved < 8 && now - d.t < 400) onTap(a, now);
+      else if (!reduce) {                                  /* ปล่อยแล้วพุ่งต่อตามแรงเหวี่ยง (จำกัดความเร็ว) */
+        var sp = Math.hypot(d.vx, d.vy), cap = a.speed * 5;
+        if (sp > cap) { d.vx *= cap / sp; d.vy *= cap / sp; }
+        if (sp > 30) { a.vx = d.vx; a.vy = d.vy; a.boost = now + 900; } else randomVel(a);
+      }
+    }
+    a.el.addEventListener('pointerup', end);
+    a.el.addEventListener('pointercancel', end);
+  }
+
+  /* ---------- สร้างและเริ่ม ---------- */
+  var all = [
+    make('fish', drawFish, 118, 82, 84, 58, 64),
+    make('shrimp', drawShrimp, 58, 76, 44, 58, 48),
+    make('star', drawStar, 66, 66, 48, 48, 40)
+  ];
+  addEventListener('resize', function () { all.forEach(size); });
+
+  function spawn(now) {
+    readObst();
+    var cx = innerWidth / 2, cy = innerHeight / 2;
+    var pref = { fish: [cx, innerHeight - 60], shrimp: [cx - 260, cy], star: [cx + 260, cy] };
+    all.forEach(function (a, i) {
+      var p = pref[a.kind], s = findSpot(a, p[0], p[1]);
+      if (s) { a.x = s.x; a.y = s.y; a.placed = true; put(a); show(a, true); restart(a.fx, 'pop'); }
+      if (!reduce) randomVel(a);
+      a.nextSay = now + 3500 + i * 4500;
+    });
+  }
+
+  var last = performance.now();
+  function frame(now) {
+    var dt = Math.min(now - last, 50) / 1000; last = now;
+    readObst();
+    var cx = innerWidth / 2, cy = innerHeight / 2;
+    all.forEach(function (a) {
+      if (!a.drag && !reduce && a.placed) {
+        /* ว่ายอิสระ: เปลี่ยนทิศสุ่มทีละน้อย และถูกดึงเข้าหากลางจอเบา ๆ */
+        var ang = (Math.random() - .5) * 2.2 * dt, c = Math.cos(ang), s = Math.sin(ang);
+        var vx = a.vx * c - a.vy * s, vy = a.vx * s + a.vy * c;
+        vx += Math.sign(cx - (a.x + a.w / 2)) * 14 * dt;
+        vy += Math.sign(cy - (a.y + a.h / 2)) * 6 * dt;
+        if (a.kind === 'fish') vy = Math.max(-a.speed * .45, Math.min(a.speed * .45, vy));
+        var spd = Math.hypot(vx, vy) || 1, target = a.speed * (now < a.boost ? 2.4 : 1);
+        var f = 1 + (target / spd - 1) * Math.min(1, dt * 2.5); vx *= f; vy *= f;
+        a.vx = vx; a.vy = vy;
+        /* เดินทีละแกน ก้าวไหนจะทับปุ่มหรือออกนอกจอ ไม่เดิน แต่เด้งกลับ */
+        var nx = a.x + a.vx * dt; if (free(nx, a.y, a.w, a.h)) a.x = nx; else a.vx = -a.vx;
+        var ny = a.y + a.vy * dt; if (free(a.x, ny, a.w, a.h)) a.y = ny; else a.vy = -a.vy;
+        if (a.kind !== 'star' && Math.abs(a.vx) > 4) a.sp.classList.toggle('left', a.vx < 0);
+      }
+    });
+    /* มาสคอตชนกันเองแล้วเด้งออก */
+    for (var i = 0; i < all.length; i++) for (var j = i + 1; j < all.length; j++) {
+      var p = all[i], q = all[j]; if (!p.placed || !q.placed || p.drag || q.drag) continue;
+      var dx = (q.x + q.w / 2) - (p.x + p.w / 2), dy = (q.y + q.h / 2) - (p.y + p.h / 2);
+      var dist = Math.hypot(dx, dy) || 1, min = (Math.min(p.w, p.h) + Math.min(q.w, q.h)) / 2;
+      if (dist < min) {
+        var nx2 = dx / dist, ny2 = dy / dist, push = (min - dist) / 2;
+        if (free(p.x - nx2 * push, p.y - ny2 * push, p.w, p.h)) { p.x -= nx2 * push; p.y -= ny2 * push; }
+        if (free(q.x + nx2 * push, q.y + ny2 * push, q.w, q.h)) { q.x += nx2 * push; q.y += ny2 * push; }
+        var pv = p.vx * nx2 + p.vy * ny2, qv = q.vx * nx2 + q.vy * ny2;
+        if (pv - qv > 0) { p.vx += (qv - pv) * nx2; p.vy += (qv - pv) * ny2; q.vx += (pv - qv) * nx2; q.vy += (pv - qv) * ny2; }
+      }
+    }
+    all.forEach(function (a) {
+      /* ตรวจซ้ำทุกเฟรม: ถ้าทับ (หน้าเปลี่ยน/เลื่อน) ย้ายไปจุดว่างใกล้สุด ไม่มีที่ว่างก็ซ่อน */
+      if (!free(a.x, a.y, a.w, a.h)) {
+        if (a.drag) { a.drag = null; a.el.classList.remove('drag'); }
+        var s = findSpot(a, a.x + a.w / 2, a.y + a.h / 2);
+        if (s) { a.x = s.x; a.y = s.y; a.placed = true; show(a, true); restart(a.fx, 'pop'); }
+        else { a.placed = false; show(a, false); }
+      } else if (!a.placed) { a.placed = true; show(a, true); }
+      put(a);
+      if (a.say.classList.contains('on') && (now > a.sayOff || !sayBoxFree(a))) hideSay(a);
+      if (a.placed && !a.drag && a.nextSay && now > a.nextSay) {
+        speak(a, LINES[a.kind][a.li++ % LINES[a.kind].length], now);
+        a.nextSay = now + 12000 + Math.random() * 6000;
+      }
+    });
     requestAnimationFrame(frame);
   }
-  requestAnimationFrame(frame);
+  function start() { setTimeout(function () { spawn(performance.now()); last = performance.now(); requestAnimationFrame(frame); }, 300); }
+  if (document.readyState === 'complete') start(); else addEventListener('load', start);
 })();

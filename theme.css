@@ -272,3 +272,21 @@ th{letter-spacing:.2px}
 :root[data-theme="dark"] .wrap > header::before,:root[data-theme="dark"] .hero::before{opacity:.18 !important}
 :root[data-theme="dark"] .mc svg{filter:drop-shadow(0 0 8px rgba(255,200,120,.25))}
 @media (prefers-reduced-motion:reduce){:root[data-theme="dark"] body::before{animation:none !important}}
+
+/* แพลงก์ตอนเม็ดใหญ่ลอยขึ้น (สร้างโดย theme.js เฉพาะโหมดมืด) */
+.plankton{position:fixed;inset:0;z-index:-1;pointer-events:none;overflow:hidden}
+:root:not([data-theme="dark"]) .plankton{display:none}
+.plankton span{
+  position:absolute;bottom:-24px;border-radius:50%;opacity:0;
+  background:radial-gradient(circle at 35% 35%,#fff 0%,var(--c) 45%,transparent 72%);
+  box-shadow:0 0 12px 2px var(--c);
+  animation-name:t-rise,t-pulse;animation-timing-function:linear,ease-in-out;animation-iteration-count:1,infinite;animation-direction:normal,alternate;
+}
+@keyframes t-rise{
+  0%{transform:translate(0,0);opacity:0}
+  12%{opacity:.75}
+  50%{transform:translate(var(--dx),-55vh)}
+  85%{opacity:.55}
+  100%{transform:translate(0,-112vh);opacity:0}
+}
+@keyframes t-pulse{from{filter:brightness(.8)}to{filter:brightness(1.35)}}

@@ -52,15 +52,30 @@
   }
 }
 
-/* ---------- พื้นหลังพาสเทลลายดาว ---------- */
+/* ---------- พื้นหลังพาสเทลที่ขยับช้า ๆ ----------
+   2 ชั้น: (1) สีไล่เฉดค่อย ๆ เลื่อน 40 วินาที  (2) ลายดาวลอยเฉียงช้า ๆ ใช้เวลา 90 วินาทีต่อรอบ
+   ปรับความเร็ว/ความจางได้ที่ตัวแปรด้านล่าง  ตั้ง --t-bg-speed เป็น 0s เพื่อหยุดนิ่ง
+   ผู้ที่ตั้งค่าลดการเคลื่อนไหวในเครื่องจะเห็นพื้นหลังนิ่งอัตโนมัติ */
+:root{--t-bg-speed:90s; --t-grad-speed:40s; --t-stars-opacity:.55}
 body{
-  background:var(--t-stars),linear-gradient(160deg,#e3f6fb 0%,#f1ebfb 55%,#fdeef5 100%) !important;
-  background-attachment:fixed !important;
+  background:linear-gradient(160deg,#e3f6fb 0%,#f1ebfb 40%,#fdeef5 70%,#e6f7fa 100%) !important;
+  background-size:220% 220% !important;
+  animation:t-grad var(--t-grad-speed) ease-in-out infinite alternate;
 }
-:root[data-theme="dark"] body{background:var(--t-stars),linear-gradient(160deg,#0b2231,#10263f) !important}
+body::before{
+  content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+  background-image:var(--t-stars);background-size:140px 140px;opacity:var(--t-stars-opacity);
+  animation:t-drift var(--t-bg-speed) linear infinite;
+}
+@keyframes t-grad{from{background-position:0% 0%}to{background-position:100% 100%}}
+@keyframes t-drift{from{background-position:0 0}to{background-position:140px 280px}}
+:root[data-theme="dark"] body{background:linear-gradient(160deg,#0b2231,#10263f,#0d2a3a) !important;background-size:220% 220% !important}
+:root[data-theme="dark"] body::before{opacity:.18}
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]) body{background:var(--t-stars),linear-gradient(160deg,#0b2231,#10263f) !important}
+  :root:not([data-theme="light"]) body{background:linear-gradient(160deg,#0b2231,#10263f,#0d2a3a) !important;background-size:220% 220% !important}
+  :root:not([data-theme="light"]) body::before{opacity:.18}
 }
+@media (prefers-reduced-motion:reduce){body,body::before{animation:none !important}}
 
 /* ---------- ส่วนหัว: ไล่สีทะเล + ดาว ---------- */
 .hero,header.top{background:var(--t-hero) !important;border-bottom:3px solid var(--t-ink)}

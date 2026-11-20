@@ -1,0 +1,139 @@
+/* theme.css : ธีมกลางของทั้งโปรเจกต์ (โหลดเป็นไฟล์สุดท้ายในทุกหน้า)
+   โทนสีมาจากรูปอ้างอิง: ฟ้าน้ำทะเล ทีลอควา ชมพูพาสเทล ส้มคอรัล ดาวเหลือง เส้นขอบหนาสไตล์สติกเกอร์
+   เปลี่ยนสีทั้งเว็บได้ที่ตัวแปร --t-* ด้านล่าง */
+:root{
+  --t-ink:#12344d; --t-ink2:#3f6178;
+  --t-sky:#8fdcf7; --t-fin:#1d9ad8; --t-deep:#0b6a93;
+  --t-aqua:#5ec5bd; --t-teal:#10958a;
+  --t-pink:#f9a8c9; --t-coral:#f0604f; --t-star:#ffe27a; --t-lilac:#efe6fb;
+  --t-stars:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cpath d='M32 14l4.4 9.4 10.2 1.2-7.6 7 2.1 10.1L32 36l-9.1 5 2.1-10.1-7.6-7 10.2-1.2z' fill='%23ffe27a' fill-opacity='.7'/%3E%3Ccircle cx='104' cy='92' r='6' fill='%23f9a8c9' fill-opacity='.55'/%3E%3Ccircle cx='96' cy='26' r='3.5' fill='%238fdcf7' fill-opacity='.9'/%3E%3Ccircle cx='40' cy='104' r='3' fill='%235ec5bd' fill-opacity='.6'/%3E%3C/svg%3E");
+  --t-hero:linear-gradient(120deg,#0b6a93 0%,#118aa5 55%,#15968c 100%);
+  --t-pop:3px 3px 0 var(--t-ink);
+}
+
+/* ---------- ตัวแปรของแต่ละหน้า (โหมดสว่าง) ---------- */
+:root{
+  /* dashboard / drug_dashboard */
+  --bg:#e6f7fa; --surface:#fff; --surface-2:#f0fbfb; --border:#b9e1e8;
+  --ink:#12344d; --ink-2:#3f6178; --ink-3:#5f8296;
+  --blue:#1d9ad8; --blue-2:#0b6a93; --blue-soft:#dcf3fc; --blue-line:#8fdcf7;
+  --orange:#d9730d; --orange-soft:#fff0d9; --red:#dd4558; --red-soft:#ffe6eb;
+  --green:#0d8a80; --green-soft:#d8f5f1;
+  --grid:#d3ebf0; --shadow:var(--t-pop); --weekend:rgba(94,197,189,.12);
+  /* admin */
+  --card:#fff; --sub:#f0fbfb; --line:#c7e6ec; --hover:#e3f6fa; --text:#12344d; --muted:#3f6178;
+  --orange-ink:#a85a08; --red-ink:#b9344a; --gray:#6f8ea1;
+  /* index */
+  --c1:#1d9ad8; --c1s:#dcf3fc; --c2:#d6558f; --c2s:#ffe3ef; --c3:#0d8a80; --c3s:#d8f5f1; --c4:#d9730d; --c4s:#fff0d9;
+  /* pos */
+  --primary:#5ec5bd; --primary-hover:#7ad6cf; --primary-ink:#0a2b3a; --primary-soft:#dff6f3; --primary-line:#12344d;
+  /* status */
+  --ok:#0d7a63; --ok-bg:#d8f5f1; --bad:#b9344a; --bad-bg:#ffe6eb; --wait:#6f8ea1; --wait-bg:#e8f3f6;
+  --warn-bg:#fff0d9; --accent:#1d9ad8;
+}
+
+/* ---------- โหมดมืด (dashboard) ---------- */
+:root[data-theme="dark"]{
+  --bg:#0b2231; --surface:#11344a; --surface-2:#14405a; --border:#24607f;
+  --ink:#eaf9fb; --ink-2:#b5dbe6; --ink-3:#86b3c4;
+  --blue:#5fd0f5; --blue-2:#1d9ad8; --blue-soft:#123e57; --blue-line:#2a7fa6;
+  --orange:#ffb25c; --orange-soft:#3d2e18; --red:#ff8794; --red-soft:#3f2030;
+  --green:#5ee0cf; --green-soft:#124a48; --grid:#1c4a63;
+  --shadow:3px 3px 0 #000; --weekend:rgba(94,197,189,.10);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0b2231; --surface:#11344a; --surface-2:#14405a; --border:#24607f;
+    --ink:#eaf9fb; --ink-2:#b5dbe6; --ink-3:#86b3c4;
+    --blue:#5fd0f5; --blue-2:#1d9ad8; --blue-soft:#123e57; --blue-line:#2a7fa6;
+    --orange:#ffb25c; --orange-soft:#3d2e18; --red:#ff8794; --red-soft:#3f2030;
+    --green:#5ee0cf; --green-soft:#124a48; --grid:#1c4a63;
+    --shadow:3px 3px 0 #000; --weekend:rgba(94,197,189,.10);
+  }
+}
+
+/* ---------- พื้นหลังพาสเทลลายดาว ---------- */
+body{
+  background:var(--t-stars),linear-gradient(160deg,#e3f6fb 0%,#f1ebfb 55%,#fdeef5 100%) !important;
+  background-attachment:fixed !important;
+}
+:root[data-theme="dark"] body{background:var(--t-stars),linear-gradient(160deg,#0b2231,#10263f) !important}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) body{background:var(--t-stars),linear-gradient(160deg,#0b2231,#10263f) !important}
+}
+
+/* ---------- ส่วนหัว: ไล่สีทะเล + ดาว ---------- */
+.hero,header.top{background:var(--t-hero) !important;border-bottom:3px solid var(--t-ink)}
+.hero::before{background-image:var(--t-stars) !important;opacity:.35 !important}
+.hero h1,header.top h1{text-shadow:2px 2px 0 rgba(18,52,77,.45)}
+
+/* ปุ่มแคปซูลบนส่วนหัว: ขาว ขอบเข้ม เงาแข็ง */
+.tbtn,.home-link,header.top .btn.secondary{
+  background:#fff !important;color:var(--t-ink) !important;border:2px solid var(--t-ink) !important;
+  border-radius:999px !important;font-weight:700;box-shadow:2px 2px 0 var(--t-ink);
+  transition:transform .12s,box-shadow .12s;
+}
+.tbtn:hover,.home-link:hover,header.top .btn.secondary:hover:not(:disabled){
+  background:var(--t-star) !important;transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--t-ink)}
+.tbtn:active,.home-link:active{transform:translate(2px,2px);box-shadow:0 0 0 var(--t-ink)}
+header.top .btn.primary{background:var(--t-star) !important;color:var(--t-ink) !important;border:2px solid var(--t-ink) !important}
+
+/* ---------- การ์ดสไตล์สติกเกอร์ ---------- */
+.card,.panel,.kpi,nav .btn,.wrap > .note,.chosen,.result{
+  border:2.5px solid var(--t-ink) !important;border-radius:20px !important;box-shadow:var(--t-pop) !important;
+}
+.panel,.card{background:var(--surface,#fff)}
+.wrap > .note{background:#fff;border-style:dashed !important}
+.demo-note{border:2px dashed var(--t-ink) !important;background:#fff;border-radius:14px !important;font-weight:600}
+.srcbadge{background:var(--t-teal) !important;border:2px solid var(--t-ink) !important;box-shadow:2px 2px 0 var(--t-ink)}
+
+/* หน้าแรก: ปุ่มเมนูเด้งตอน hover */
+nav .btn{transition:transform .12s,box-shadow .12s !important}
+nav .btn:hover{transform:translate(-2px,-2px) rotate(-.4deg) !important;box-shadow:6px 6px 0 var(--t-ink) !important;border-color:var(--t-ink) !important}
+nav .btn:active{transform:translate(2px,2px) !important;box-shadow:0 0 0 var(--t-ink) !important}
+nav .btn::before{width:8px !important;border-radius:0 8px 8px 0 !important}
+.logo{background:linear-gradient(145deg,var(--t-aqua),var(--t-fin)) !important;border:2.5px solid var(--t-ink);box-shadow:var(--t-pop) !important;border-radius:22px !important}
+.ic{border:2px solid var(--t-ink);border-radius:50% !important}
+h1{letter-spacing:.2px}
+
+/* ---------- ปุ่มหลักแบบแคปซูล (admin / pos) ---------- */
+.btn.primary,.btn.block,#sell{
+  border:2.5px solid var(--t-ink) !important;border-radius:999px !important;box-shadow:3px 3px 0 var(--t-ink);
+  transition:transform .12s,box-shadow .12s;
+}
+.btn.primary{background:var(--t-aqua) !important;color:var(--t-ink) !important}
+.btn.primary:hover:not(:disabled){background:#7ad6cf !important;transform:translate(-1px,-1px);box-shadow:4px 4px 0 var(--t-ink)}
+.btn.primary:active:not(:disabled),#sell:active:not(:disabled){transform:translate(2px,2px);box-shadow:0 0 0 var(--t-ink)}
+.btn.secondary,.btn.ghost{border:2px solid var(--t-ink) !important;border-radius:999px !important;color:var(--t-ink) !important;background:#fff !important}
+.btn.secondary:hover:not(:disabled),.btn.ghost:hover{background:var(--t-lilac) !important}
+.btn:disabled{box-shadow:none !important;border-color:#9db4c0 !important}
+
+/* แท็บ ป้าย ช่องกรอก */
+.tab{border-radius:999px !important}
+.tab[aria-selected="true"],.tab.active,.tab.on{background:var(--t-pink) !important;color:var(--t-ink) !important;border:2px solid var(--t-ink) !important;box-shadow:2px 2px 0 var(--t-ink)}
+.pill,.badge,.tag{border:1.5px solid var(--t-ink) !important;font-weight:700}
+input,select,textarea{border-color:#8fc3d3 !important}
+input:focus,select:focus,textarea:focus{border-color:var(--t-ink) !important;box-shadow:3px 3px 0 var(--t-star)}
+:focus-visible{outline:3px solid var(--t-coral) !important;outline-offset:2px}
+
+/* แถบสถานะ pos / status */
+.bar.ok{background:var(--primary-soft);border:2px solid var(--t-ink) !important}
+.bar.fallback{border:2px solid var(--t-ink) !important}
+.result.ok{background:var(--primary-soft);color:var(--t-ink)}
+.result.err{background:var(--err-soft)}
+tr.sel{background:#fff6cf !important}
+tr.pick:hover{background:var(--blue-soft) !important}
+
+/* ตัวเลขสถานะ ใช้ลายเส้นนุ่ม ๆ ในตาราง */
+th{letter-spacing:.2px}
+
+@media (prefers-reduced-motion:reduce){
+  *{transition:none !important}
+}
+
+/* โหมดมืด: ขอบการ์ดใช้สีอควา เพื่อให้เห็นเส้นสติกเกอร์ */
+:root[data-theme="dark"] :is(.card,.kpi,.panel){border-color:var(--t-aqua) !important;box-shadow:3px 3px 0 var(--t-aqua) !important}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]) :is(.card,.kpi,.panel){border-color:var(--t-aqua) !important;box-shadow:3px 3px 0 var(--t-aqua) !important}
+}
+.list .btn.small{padding:0 14px}

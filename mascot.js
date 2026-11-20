@@ -1,5 +1,6 @@
 /* mascot.js : มาสคอต 3 ตัว ถือเม็ดยา (ออกแบบขึ้นใหม่เอง ไม่ได้อิงตัวการ์ตูนใด) ใช้เฉพาะหน้าแรก index.html
-     ปลาทอง กุ้ง ปลาดาว ว่ายอิสระทั่วจอ ถูกดึงเข้าหากลางจอเบา ๆ
+     โหมดสว่าง: ปลาทอง กุ้ง ปลาดาว   โหมดมืด: ฉลาม แมงกะพรุน ปลาแองเกลอร์
+     ว่ายอิสระทั่วจอ ถูกดึงเข้าหากลางจอเบา ๆ
    เล่นได้: แตะ = เด้งดึ๋ง พูด และมีหัวใจ   แตะรัว 5 ครั้ง = หมุนติ้ว   ลาก = จับย้ายแล้วปล่อยให้ว่ายต่อ
 
    กติกาห้ามทับปุ่ม (ตรวจทุกเฟรม)
@@ -16,7 +17,8 @@
   var ST = { stroke: INK, 'stroke-width': 3, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' };
   function P(tag, a, par) { return s(tag, Object.assign({}, ST, a), par); }
   function pill(par, tf, cls) {                       /* เม็ดยา: ครึ่งชมพู ครึ่งอควา */
-    var g = s('g', { transform: tf }, par); if (cls) g.setAttribute('class', cls);
+    /* กลุ่มนอกกำหนดตำแหน่ง กลุ่มในใส่แอนิเมชัน (แอนิเมชัน CSS จะทับ transform ของกลุ่มเดียวกัน) */
+    var g = s('g', {}, s('g', { transform: tf }, par)); if (cls) g.setAttribute('class', cls);
     P('rect', { x: -15, y: -7, width: 30, height: 14, rx: 7, fill: '#5ec5bd' }, g);
     P('path', { d: 'M0 -7H-8A7 7 0 0 0-8 7H0Z', fill: '#f9a8c9' }, g);
     s('path', { d: 'M5 -3h6', stroke: '#fff', 'stroke-width': 2, 'stroke-linecap': 'round', opacity: '.8' }, g);
@@ -83,6 +85,61 @@
     return v;
   }
 
+  /* ---------- ชุดโหมดมืด: ฉลาม แมงกะพรุน ปลาแองเกลอร์ (ถือเม็ดยาเหมือนกัน) ---------- */
+  function drawShark() {                              /* ฉลามน้อย หันขวา ขนาดเท่าปลาทอง */
+    var v = svgBox('0 0 130 90');
+    var tail = s('g', { 'class': 'mc-tail', style: 'transform-origin:30px 46px' }, v);
+    P('path', { d: 'M32 46L8 22C6 34 10 42 14 46C10 50 6 58 8 70Z', fill: '#7d9cb8' }, tail);
+    P('path', { d: 'M56 24C60 8 70 4 78 6C74 12 72 18 72 25Z', fill: '#7d9cb8' }, v);
+    P('path', { d: 'M28 46C34 28 60 20 86 24C104 27 118 36 120 46C118 58 102 66 84 68C58 72 34 64 28 46Z', fill: '#98b6cf' }, v);
+    s('path', { d: 'M40 52C56 64 86 66 112 54C104 64 86 68 70 67C56 66 46 60 40 52Z', fill: '#eaf3f8' }, v);
+    ['M66 38v12', 'M71 37v13', 'M76 37v12'].forEach(function (d) {
+      s('path', { d: d, fill: 'none', stroke: '#5f7f9b', 'stroke-width': 2.2, 'stroke-linecap': 'round' }, v); });
+    eye(v, 96, 38, 7.5);
+    s('circle', { cx: 92, cy: 50, r: 3.8, fill: '#f9a8c9', opacity: '.8' }, v);
+    s('path', { d: 'M100 52q6 5 13 0', fill: '#fff', stroke: INK, 'stroke-width': 2.4, 'stroke-linecap': 'round', 'stroke-linejoin': 'round' }, v);
+    s('path', { d: 'M103 53l1.5 3 1.5-3M108 53l1.5 3 1.5-3', fill: '#fff', stroke: INK, 'stroke-width': 1.4, 'stroke-linejoin': 'round' }, v);
+    pill(v, 'translate(94 70) rotate(-24)', 'mc-pill2');
+    P('path', { d: 'M74 58C82 60 88 66 86 74C80 72 74 66 74 58Z', fill: '#7d9cb8' }, v);
+    star(v, 118, 18);
+    return v;
+  }
+  function drawJelly() {                              /* แมงกะพรุน ตั้งตรง ขนาดเท่ากุ้ง */
+    var v = svgBox('0 0 70 92');
+    var tents = s('g', { 'class': 'mc-tent' }, v);
+    ['M20 44c-4 10 4 16 0 26s4 14 0 20', 'M30 46c-3 10 3 16 0 26', 'M40 46c3 10-3 16 0 26s-3 10 0 16'].forEach(function (d) {
+      s('path', { d: d, fill: 'none', stroke: '#c79cf2', 'stroke-width': 3.2, 'stroke-linecap': 'round' }, tents); });
+    s('path', { d: 'M49 44c5 6 6 12 8 18', fill: 'none', stroke: '#c79cf2', 'stroke-width': 3.2, 'stroke-linecap': 'round' }, v);
+    var bell = s('g', { 'class': 'mc-bob' }, v);
+    P('path', { d: 'M8 42C8 18 22 6 35 6S62 18 62 42C56 46 50 42 44 46C38 42 32 46 26 42C20 46 14 42 8 42Z', fill: '#e2c6ff', opacity: '.95' }, bell);
+    s('path', { d: 'M18 20q6-8 16-8', fill: 'none', stroke: '#fff', 'stroke-width': 3, 'stroke-linecap': 'round', opacity: '.8' }, bell);
+    eye(bell, 27, 28, 5.4); eye(bell, 43, 28, 5.4);
+    s('circle', { cx: 20, cy: 36, r: 3.2, fill: '#f9a8c9', opacity: '.85' }, bell);
+    s('circle', { cx: 50, cy: 36, r: 3.2, fill: '#f9a8c9', opacity: '.85' }, bell);
+    s('path', { d: 'M31 37q4 3.5 8 0', fill: 'none', stroke: INK, 'stroke-width': 2.2, 'stroke-linecap': 'round' }, bell);
+    pill(v, 'translate(58 66) rotate(64)', 'mc-pill2');
+    star(v, 60, 6);
+    return v;
+  }
+  function drawAngler() {                             /* ปลาแองเกลอร์ หันขวา มีโคมไฟบนหัว ขนาดเท่าปลาดาว */
+    var v = svgBox('0 0 92 92');
+    s('path', { d: 'M46 26C48 12 60 6 72 10', fill: 'none', stroke: INK, 'stroke-width': 2.6, 'stroke-linecap': 'round' }, v);
+    var lure = s('g', { 'class': 'mc-lure', style: 'transform-origin:74px 12px' }, v);
+    s('circle', { cx: 74, cy: 12, r: 11, fill: '#fff3a6', opacity: '.35' }, lure);
+    P('circle', { cx: 74, cy: 12, r: 5.5, fill: '#ffe27a', 'stroke-width': 2.2 }, lure);
+    var tail = s('g', { 'class': 'mc-tail', style: 'transform-origin:20px 52px' }, v);
+    P('path', { d: 'M22 52L6 38C4 46 4 58 6 66Z', fill: '#7b6fd0' }, tail);
+    P('path', { d: 'M20 52C20 34 36 24 54 24C72 24 84 38 84 54C84 70 70 80 52 80C34 80 20 70 20 52Z', fill: '#958ae6' }, v);
+    s('path', { d: 'M30 60c8 10 30 14 46 4', fill: 'none', stroke: '#7b6fd0', 'stroke-width': 2.2, 'stroke-linecap': 'round' }, v);
+    eye(v, 60, 42, 7.5);
+    s('circle', { cx: 50, cy: 54, r: 3.6, fill: '#f9a8c9', opacity: '.8' }, v);
+    P('path', { d: 'M62 58Q74 54 84 56Q80 68 66 66Z', fill: '#3a2b55', 'stroke-width': 2.4 }, v);
+    s('path', { d: 'M66 58l2 4 2-4.5M72 57l2 4 2-4.5M78 56.5l2 3.5', fill: '#fff', stroke: INK, 'stroke-width': 1.3, 'stroke-linejoin': 'round' }, v);
+    pill(v, 'translate(48 80) rotate(-14)', 'mc-pill2');
+    P('path', { d: 'M38 66C44 70 46 76 42 82C36 78 34 72 38 66Z', fill: '#7b6fd0' }, v);
+    return v;
+  }
+
   /* ---------- CSS ---------- */
   var css = document.createElement('style');
   css.textContent =
@@ -92,10 +149,13 @@
     '.mc .fx.boing{animation:mc-boing .6s ease}.mc .fx.spin{animation:mc-spin .9s ease}.mc .fx.pop{animation:mc-pop .35s ease}' +
     '.mc.drag .fx{transform:scale(1.12) rotate(-6deg)}' +
     '.mc .mc-tail{animation:mc-wag .55s ease-in-out infinite alternate}' +
-    '.mc .mc-pill{animation:mc-pill 1.1s ease-in-out infinite alternate}' +
+    '.mc .mc-pill{animation:mc-pill 1.1s ease-in-out infinite alternate;transform-box:fill-box;transform-origin:center}' +
     '.mc .mc-pill2{animation:mc-pill2 1.1s ease-in-out infinite alternate}' +
     '.mc .mc-sway{animation:mc-sway 2.2s ease-in-out infinite alternate}' +
     '.mc .mc-ant{animation:mc-ant 1.4s ease-in-out infinite alternate;transform-origin:28px 16px}' +
+    '.mc .mc-tent{animation:mc-tent 1.3s ease-in-out infinite alternate;transform-origin:35px 44px}' +
+    '.mc .mc-bob{animation:mc-bob 1.3s ease-in-out infinite alternate}' +
+    '.mc .mc-lure{animation:mc-lure 1.8s ease-in-out infinite alternate}' +
     '.mc .mc-star{animation:mc-tw 1.6s ease-in-out infinite;transform-box:fill-box;transform-origin:center}' +
     '.mc .mc-eye{animation:mc-blink 4.5s infinite;transform-box:fill-box;transform-origin:center}' +
     '.mc .say{position:absolute;bottom:calc(var(--h) + 8px);left:50%;transform:translateX(-50%) scale(.8);opacity:0;white-space:nowrap;pointer-events:none;' +
@@ -106,12 +166,15 @@
     '.mc .say.dn{bottom:auto;top:calc(var(--h) + 8px)}.mc .say.al.on,.mc .say.ar.on{transform:scale(1)}' +
     '.mc .ht{position:absolute;pointer-events:none;font-size:18px;color:#f06a9b;text-shadow:1px 1px 0 ' + INK + ';animation:mc-heart .9s ease-out forwards}' +
     '@keyframes mc-wag{from{transform:rotate(-12deg)}to{transform:rotate(12deg)}}' +
-    '@keyframes mc-pill{from{transform:translate(92px,62px) rotate(-32deg)}to{transform:translate(92px,59px) rotate(-22deg)}}' +
+    '@keyframes mc-pill{from{transform:rotate(-4deg)}to{transform:translateY(-3px) rotate(6deg)}}' +
     '@keyframes mc-pill2{from{transform:translateY(0)}to{transform:translateY(-3px)}}' +
     '@keyframes mc-sway{from{transform:rotate(-9deg)}to{transform:rotate(9deg)}}' +
     '@keyframes mc-ant{from{transform:rotate(-8deg)}to{transform:rotate(8deg)}}' +
     '@keyframes mc-tw{0%,100%{transform:scale(1) rotate(0)}50%{transform:scale(1.25) rotate(12deg)}}' +
     '@keyframes mc-blink{0%,94%,100%{transform:scaleY(1)}97%{transform:scaleY(.1)}}' +
+    '@keyframes mc-tent{from{transform:skewX(-6deg)}to{transform:skewX(6deg) scaleY(.94)}}' +
+    '@keyframes mc-bob{from{transform:translateY(0) scale(1,1)}to{transform:translateY(-2px) scale(1.04,.96)}}' +
+    '@keyframes mc-lure{from{transform:rotate(-8deg);filter:brightness(1)}to{transform:rotate(8deg);filter:brightness(1.4) drop-shadow(0 0 6px #ffe27a)}}' +
     '@keyframes mc-boing{0%{transform:scale(1)}30%{transform:scale(1.25,.8)}55%{transform:scale(.85,1.2) translateY(-6px)}80%{transform:scale(1.06,.95)}100%{transform:scale(1)}}' +
     '@keyframes mc-spin{from{transform:rotate(0)}to{transform:rotate(720deg)}}' +
     '@keyframes mc-pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}' +
@@ -150,15 +213,34 @@
     star:   ['หมุนติ้ว~', 'ดาวประจำร้านมาแล้ว', 'เลือกล็อตให้ระบบ ไม่ต้องเลือกเอง', 'กินยาให้ตรงเวลานะ']
   };
   var SPIN_LINE = { fish: 'เวียนหัวแล้ววว', shrimp: 'กุ้งงงหมุนนน', star: 'ดาวหมุนรอบตัวเอง!' };
+  /* ชุดโหมดมืด: ตำแหน่งเดียวกัน เปลี่ยนตัวละครและคำพูด */
+  var DARK = {
+    fish:   { draw: drawShark,  flip: true,  lines: ['ฉลามใจดีนะ ไม่กัด', 'ฟันสะอาดเพราะแปรงทุกวัน', 'ดึกแล้ว ตรวจสต็อกก่อนนอนนะ', 'ยาใกล้หมดอายุ จ่ายก่อนนะ'], spin: 'ฉลามหมุนวนนน' },
+    shrimp: { draw: drawJelly,  flip: false, lines: ['ดึ๋ง ๆ ลอยไปลอยมา', 'แมงกะพรุนเรืองแสงได้นะ', 'ถามรหัสผู้ป่วยให้ครบก่อนจ่าย', 'ข้อมูลจำลองนะ ห้ามใส่ชื่อจริง'], spin: 'หนวดพันกันแล้ว!' },
+    star:   { draw: drawAngler, flip: true,  lines: ['ส่องไฟให้ทางมืดเอง', 'ในทะเลลึกก็ต้องกินยาตรงเวลา', 'เลือกล็อตให้ระบบ ไม่ต้องเลือกเอง', 'ไฟบนหัวไม่ใช่ขนมนะ'], spin: 'ไฟหมุนติ้ว~' }
+  };
+  var LIGHT_FLIP = { fish: true, shrimp: true, star: false };
+  function isDark() { return document.documentElement.dataset.theme === 'dark'; }
+  function linesOf(a) { return isDark() ? DARK[a.kind].lines : LINES[a.kind]; }
+  function spinOf(a) { return isDark() ? DARK[a.kind].spin : SPIN_LINE[a.kind]; }
+  function flips(a) { return isDark() ? DARK[a.kind].flip : LIGHT_FLIP[a.kind]; }
+  function skin(a) {                                   /* วาดตัวละครตามโหมดสีปัจจุบัน */
+    var mode = isDark() ? 'dark' : 'light';
+    if (a.skin === mode) return;
+    a.skin = mode; a.sp.textContent = '';
+    a.sp.appendChild(mode === 'dark' ? DARK[a.kind].draw() : a.draw());
+    if (!flips(a)) a.sp.classList.remove('left');
+    if (a.fx) restart(a.fx, 'pop');
+  }
   function make(kind, draw, w, h, ws, hs, speed) {
     var el = document.createElement('div'); el.className = 'mc off'; el.setAttribute('aria-hidden', 'true');
     var say = document.createElement('div'); say.className = 'say';
     var fx = document.createElement('div'); fx.className = 'fx';
-    var sp = document.createElement('div'); sp.className = 'sp'; sp.appendChild(draw());
+    var sp = document.createElement('div'); sp.className = 'sp';
     fx.appendChild(sp); el.appendChild(say); el.appendChild(fx); document.body.appendChild(el);
     var a = { kind: kind, el: el, say: say, fx: fx, sp: sp, W: w, H: h, WS: ws, HS: hs, speed: speed,
-              x: 0, y: 0, vx: 0, vy: 0, placed: false, boost: 0, sayOff: 0, nextSay: 0, taps: [], li: 0, drag: null };
-    size(a); bindPointer(a); return a;
+              draw: draw, skin: '', x: 0, y: 0, vx: 0, vy: 0, placed: false, boost: 0, sayOff: 0, nextSay: 0, taps: [], li: 0, drag: null };
+    skin(a); size(a); bindPointer(a); return a;
   }
   function size(a) {
     var sm = innerWidth < 600; a.w = sm ? a.WS : a.W; a.h = sm ? a.HS : a.H;
@@ -210,9 +292,9 @@
   function onTap(a, now) {
     a.taps = a.taps.filter(function (t) { return now - t < 2000; }); a.taps.push(now);
     if (a.taps.length >= 5) {
-      a.taps = []; restart(a.fx, 'spin'); hideSay(a); speak(a, SPIN_LINE[a.kind], now);
+      a.taps = []; restart(a.fx, 'spin'); hideSay(a); speak(a, spinOf(a), now);
     } else {
-      restart(a.fx, 'boing'); hearts(a); hideSay(a); speak(a, LINES[a.kind][a.li++ % LINES[a.kind].length], now);
+      restart(a.fx, 'boing'); hearts(a); hideSay(a); speak(a, linesOf(a)[a.li++ % linesOf(a).length], now);
     }
     if (!reduce) { randomVel(a, 2.6); a.boost = now + 1200; }   /* ตกใจ ว่ายหนีเร็วขึ้นชั่วครู่ */
   }
@@ -259,6 +341,9 @@
     make('star', drawStar, 66, 66, 48, 48, 40)
   ];
   addEventListener('resize', function () { all.forEach(size); });
+  /* สลับโหมดสี -> เปลี่ยนตัวละครทันที (ปลาทอง→ฉลาม กุ้ง→แมงกะพรุน ปลาดาว→ปลาแองเกลอร์) */
+  new MutationObserver(function () { all.forEach(function (a) { skin(a); hideSay(a); }); })
+    .observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
 
   function spawn(now) {
     readObst();
@@ -291,7 +376,7 @@
         /* เดินทีละแกน ก้าวไหนจะทับปุ่มหรือออกนอกจอ ไม่เดิน แต่เด้งกลับ */
         var nx = a.x + a.vx * dt; if (free(nx, a.y, a.w, a.h)) a.x = nx; else a.vx = -a.vx;
         var ny = a.y + a.vy * dt; if (free(a.x, ny, a.w, a.h)) a.y = ny; else a.vy = -a.vy;
-        if (a.kind !== 'star' && Math.abs(a.vx) > 4) a.sp.classList.toggle('left', a.vx < 0);
+        if (flips(a) && Math.abs(a.vx) > 4) a.sp.classList.toggle('left', a.vx < 0);
       }
     });
     /* มาสคอตชนกันเองแล้วเด้งออก */
@@ -318,7 +403,7 @@
       put(a);
       if (a.say.classList.contains('on') && (now > a.sayOff || !sayBoxFree(a))) hideSay(a);
       if (a.placed && !a.drag && a.nextSay && now > a.nextSay) {
-        speak(a, LINES[a.kind][a.li++ % LINES[a.kind].length], now);
+        speak(a, linesOf(a)[a.li++ % linesOf(a).length], now);
         a.nextSay = now + 12000 + Math.random() * 6000;
       }
     });

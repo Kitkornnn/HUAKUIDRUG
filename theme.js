@@ -36,9 +36,9 @@
   });
 
   /* ---------- แพลงก์ตอนเรืองแสง (เฉพาะโหมดมืด) ----------
-     ลอยขึ้นจากด้านล่างประมาณวินาทีละ 1 เม็ด บนจอพร้อมกันไม่เกิน MAX เม็ด อยู่หลังเนื้อหา ไม่รับการคลิก
+     ลอยขึ้นจากด้านล่างทุก 5 วินาที บนจอพร้อมกันไม่เกิน MAX เม็ด อยู่หลังเนื้อหา ไม่รับการคลิก
      ไม่ทำงานเมื่อผู้ใช้ตั้งค่าลดการเคลื่อนไหว หรือแท็บไม่ได้เปิดอยู่ */
-  var MAX = 14, EVERY = 1000, COLORS = ['#7af0e6', '#5fd0f5', '#5ec5bd', '#c8faff', '#f9a8c9'];
+  var MAX = 14, EVERY = 5000, COLORS = ['#7af0e6', '#5fd0f5', '#5ec5bd', '#c8faff', '#f9a8c9'];
   var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
   document.addEventListener('DOMContentLoaded', function () {
     if (still) return;

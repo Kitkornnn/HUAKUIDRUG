@@ -34,20 +34,20 @@
 
 /* ---------- โหมดมืด (dashboard) ---------- */
 :root[data-theme="dark"]{
-  --bg:#0b2231; --surface:#11344a; --surface-2:#14405a; --border:#24607f;
+  --bg:#02070c; --surface:#0a1722; --surface-2:#0e1f2c; --border:#1b3a4c;
   --ink:#eaf9fb; --ink-2:#b5dbe6; --ink-3:#86b3c4;
-  --blue:#5fd0f5; --blue-2:#1d9ad8; --blue-soft:#123e57; --blue-line:#2a7fa6;
-  --orange:#ffb25c; --orange-soft:#3d2e18; --red:#ff8794; --red-soft:#3f2030;
-  --green:#5ee0cf; --green-soft:#124a48; --grid:#1c4a63;
+  --blue:#5fd0f5; --blue-2:#1d9ad8; --blue-soft:#0b2533; --blue-line:#1f5d78;
+  --orange:#ffb25c; --orange-soft:#261a0a; --red:#ff8794; --red-soft:#2a0f1a;
+  --green:#5ee0cf; --green-soft:#0a2e2c; --grid:#132a39;
   --shadow:3px 3px 0 #000; --weekend:rgba(94,197,189,.10);
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --bg:#0b2231; --surface:#11344a; --surface-2:#14405a; --border:#24607f;
+    --bg:#02070c; --surface:#0a1722; --surface-2:#0e1f2c; --border:#1b3a4c;
     --ink:#eaf9fb; --ink-2:#b5dbe6; --ink-3:#86b3c4;
-    --blue:#5fd0f5; --blue-2:#1d9ad8; --blue-soft:#123e57; --blue-line:#2a7fa6;
-    --orange:#ffb25c; --orange-soft:#3d2e18; --red:#ff8794; --red-soft:#3f2030;
-    --green:#5ee0cf; --green-soft:#124a48; --grid:#1c4a63;
+    --blue:#5fd0f5; --blue-2:#1d9ad8; --blue-soft:#0b2533; --blue-line:#1f5d78;
+    --orange:#ffb25c; --orange-soft:#261a0a; --red:#ff8794; --red-soft:#2a0f1a;
+    --green:#5ee0cf; --green-soft:#0a2e2c; --grid:#132a39;
     --shadow:3px 3px 0 #000; --weekend:rgba(94,197,189,.10);
   }
 }
@@ -69,10 +69,10 @@ body::before{
 }
 @keyframes t-grad{from{background-position:0% 0%}to{background-position:100% 100%}}
 @keyframes t-drift{from{background-position:0 0}to{background-position:140px 280px}}
-:root[data-theme="dark"] body{background:linear-gradient(160deg,#0b2231,#10263f,#0d2a3a) !important;background-size:220% 220% !important}
+:root[data-theme="dark"] body{background:linear-gradient(160deg,#02070c,#04101a,#061a26) !important;background-size:220% 220% !important}
 :root[data-theme="dark"] body::before{opacity:.18}
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]) body{background:linear-gradient(160deg,#0b2231,#10263f,#0d2a3a) !important;background-size:220% 220% !important}
+  :root:not([data-theme="light"]) body{background:linear-gradient(160deg,#02070c,#04101a,#061a26) !important;background-size:220% 220% !important}
   :root:not([data-theme="light"]) body::before{opacity:.18}
 }
 @media (prefers-reduced-motion:reduce){body,body::before{animation:none !important}}
@@ -203,41 +203,72 @@ th{letter-spacing:.2px}
 :root[data-theme="dark"]{
   color-scheme:dark;
   --t-ink:#5ec5bd; --t-pop:3px 3px 0 #5ec5bd;
-  --card:#11344a; --sub:#14405a; --line:#24607f; --hover:#18465f; --text:#eaf9fb; --muted:#b5dbe6; --gray:#86b3c4;
+  --card:#0a1722; --sub:#0e1f2c; --line:#1b3a4c; --hover:#12293a; --text:#eaf9fb; --muted:#b5dbe6; --gray:#86b3c4;
   --orange-ink:#ffb25c; --red-ink:#ff8794;
-  --c1s:#123e57; --c2s:#43213a; --c3s:#124a48; --c4s:#3d2e18; --c1:#5fd0f5; --c2:#ff8fbf; --c3:#5ee0cf; --c4:#ffb25c;
-  --primary-soft:#124a48; --primary-ink:#06221f; --primary-line:#5ec5bd;
-  --warn-soft:#3d2e18; --warn-ink:#ffd08a; --err-soft:#3f2030; --err-ink:#ffc2c9;
-  --ok:#5ee0cf; --ok-bg:#124a48; --bad:#ff8794; --bad-bg:#3f2030; --wait:#86b3c4; --wait-bg:#18465f; --warn:#ffd08a; --warn-bg:#3d2e18; --accent:#5fd0f5;
+  --c1s:#0b2533; --c2s:#2a1022; --c3s:#0a2e2c; --c4s:#261a0a; --c1:#5fd0f5; --c2:#ff8fbf; --c3:#5ee0cf; --c4:#ffb25c;
+  --primary-soft:#0a2e2c; --primary-ink:#06221f; --primary-line:#5ec5bd;
+  --warn-soft:#261a0a; --warn-ink:#ffd08a; --err-soft:#2a0f1a; --err-ink:#ffc2c9;
+  --ok:#5ee0cf; --ok-bg:#0a2e2c; --bad:#ff8794; --bad-bg:#2a0f1a; --wait:#86b3c4; --wait-bg:#12293a; --warn:#ffd08a; --warn-bg:#261a0a; --accent:#5fd0f5;
 }
 :root[data-theme="dark"] body{color:var(--ink)}
-:root[data-theme="dark"] :is(.card,.panel,.kpi,nav .btn,.chosen,.result,.wrap > .note,.demo-note,.check){background-color:var(--card,#11344a)}
+:root[data-theme="dark"] :is(.card,.panel,.kpi,nav .btn,.chosen,.result,.wrap > .note,.demo-note,.check){background-color:var(--card,#0a1722)}
 :root[data-theme="dark"] :is(.wrap > .note,.demo-note,.chosen,.result,.bar,.check){color:var(--text)}
 :root[data-theme="dark"] nav .btn{color:var(--text)}
-:root[data-theme="dark"] :is(input,select,textarea){background:#0e2c3f !important;color:#eaf9fb !important;border-color:#2a7fa6 !important}
+:root[data-theme="dark"] :is(input,select,textarea){background:#050e16 !important;color:#eaf9fb !important;border-color:#1f5d78 !important}
 :root[data-theme="dark"] :is(input,textarea)::placeholder{color:#7fa9ba}
-:root[data-theme="dark"] :is(.btn.secondary,.btn.ghost,button.ghost,.tbtn,.home-link,.theme-toggle,header.top .btn.secondary){background:#11344a !important;color:#eaf9fb !important}
-:root[data-theme="dark"] :is(.btn.secondary,.btn.ghost,.tbtn,.home-link,.theme-toggle):hover{background:#1a4a63 !important}
+:root[data-theme="dark"] :is(.btn.secondary,.btn.ghost,button.ghost,.tbtn,.home-link,.theme-toggle,header.top .btn.secondary){background:#0a1722 !important;color:#eaf9fb !important}
+:root[data-theme="dark"] :is(.btn.secondary,.btn.ghost,.tbtn,.home-link,.theme-toggle):hover{background:#163245 !important}
 :root[data-theme="dark"] .theme-toggle{border-color:#5ec5bd}
-:root[data-theme="dark"] .btn:disabled{background:#1c3b4d !important;color:#7fa0b0 !important}
-:root[data-theme="dark"] :is(table,th,td){border-color:#24607f}
-:root[data-theme="dark"] tr.pick:hover{background:#18465f !important}
+:root[data-theme="dark"] .btn:disabled{background:#0f202c !important;color:#7fa0b0 !important}
+:root[data-theme="dark"] :is(table,th,td){border-color:#1b3a4c}
+:root[data-theme="dark"] tr.pick:hover{background:#12293a !important}
 :root[data-theme="dark"] tr.sel{background:#3a3418 !important}
-:root[data-theme="dark"] :is(.badge.okb,.badge.ret){background:#123e57;color:#bfeefa}
-:root[data-theme="dark"] .bar.ok{background:#124a48;color:#c9f5ee}
-:root[data-theme="dark"] .result.ok{background:#124a48;color:#c9f5ee}
-:root[data-theme="dark"] .check.skip .lamp{background:#11344a}
-:root[data-theme="dark"] code{background:#0e2c3f;color:#bfeefa}
+:root[data-theme="dark"] :is(.badge.okb,.badge.ret){background:#0b2533;color:#bfeefa}
+:root[data-theme="dark"] .bar.ok{background:#0a2e2c;color:#c9f5ee}
+:root[data-theme="dark"] .result.ok{background:#0a2e2c;color:#c9f5ee}
+:root[data-theme="dark"] .check.skip .lamp{background:#0a1722}
+:root[data-theme="dark"] code{background:#050e16;color:#bfeefa}
 :root[data-theme="dark"] .wrap > header,
 :root[data-theme="dark"] .hero,
-:root[data-theme="dark"] header.top{background:linear-gradient(120deg,#08405e 0%,#0b5a72 55%,#0b6a63 100%) !important}
-:root[data-theme="dark"] .wrap > header p{background:#0e2c3f;color:#eaf9fb !important}
-:root[data-theme="dark"] .wrap > header h1{text-shadow:3px 3px 0 #0b2231,-1px -1px 0 #0b2231,1px -1px 0 #0b2231,-1px 1px 0 #0b2231}
+:root[data-theme="dark"] header.top{background:linear-gradient(120deg,#031621 0%,#06283a 55%,#073a3a 100%) !important}
+:root[data-theme="dark"] .wrap > header p{background:#050e16;color:#eaf9fb !important}
+:root[data-theme="dark"] .wrap > header h1{text-shadow:3px 3px 0 #02070c,-1px -1px 0 #02070c,1px -1px 0 #02070c,-1px 1px 0 #02070c}
 :root[data-theme="dark"] .logo{color:#12344d !important}
-:root[data-theme="dark"] :is(.mc .say){background:#11344a;color:#eaf9fb;border-color:#5ec5bd;box-shadow:3px 3px 0 #5ec5bd}
-:root[data-theme="dark"] body{background:linear-gradient(160deg,#0b2231,#10263f,#0d2a3a) !important;background-size:220% 220% !important}
+:root[data-theme="dark"] :is(.mc .say){background:#0a1722;color:#eaf9fb;border-color:#5ec5bd;box-shadow:3px 3px 0 #5ec5bd}
+:root[data-theme="dark"] body{background:linear-gradient(160deg,#02070c,#04101a,#061a26) !important;background-size:220% 220% !important}
 :root[data-theme="dark"] body::before{opacity:.18}
 .hero-in > .home-link{margin-left:auto}
 .hero-in > .home-link + .theme-toggle{margin-left:-8px}
 :root[data-theme="dark"] :is(.btn.primary:not(:disabled),header.top .btn.primary,.tab[aria-selected="true"],.tab.active,.tab.on,#sell:not(:disabled)){color:#0a2b3a !important}
-:root[data-theme="dark"] header.top .btn.primary{border-color:#0b2231 !important}
+:root[data-theme="dark"] header.top .btn.primary{border-color:#02070c !important}
+
+/* ---------- โหมดมืด: ทะเลลึกสีดำ ----------
+   พื้นดำอมน้ำเงิน แสงจากผิวน้ำจาง ๆ ด้านบน แพลงก์ตอนเรืองแสงลอยช้า ๆ และการ์ดมีแสงเรืองขอบสีอควา */
+:root[data-theme="dark"] body{
+  background:
+    radial-gradient(1200px 520px at 50% -180px,rgba(56,170,190,.22),transparent 70%),
+    linear-gradient(180deg,#04121c 0%,#02070c 55%,#010409 100%) !important;
+  background-size:auto !important;animation:none;
+}
+:root[data-theme="dark"] body::before{
+  opacity:.9 !important;background-size:220px 220px;
+  background-image:
+    radial-gradient(1.6px 1.6px at 20px 30px,rgba(120,240,230,.85),transparent 60%),
+    radial-gradient(1.2px 1.2px at 140px 80px,rgba(95,208,245,.7),transparent 60%),
+    radial-gradient(2px 2px at 90px 170px,rgba(94,197,189,.6),transparent 60%),
+    radial-gradient(1px 1px at 190px 140px,rgba(200,250,255,.8),transparent 60%),
+    radial-gradient(1.4px 1.4px at 60px 110px,rgba(249,168,201,.45),transparent 60%);
+  animation:t-plankton 120s linear infinite;
+}
+@keyframes t-plankton{from{background-position:0 0}to{background-position:-220px -440px}}
+:root[data-theme="dark"] :is(.card,.kpi,.panel,nav .btn,.chosen,.result,.check,.wrap > .note,.demo-note){
+  box-shadow:3px 3px 0 #1d6f69,0 0 22px rgba(94,197,189,.14) !important;
+}
+:root[data-theme="dark"] :is(.card,.kpi,.panel,nav .btn,.chosen,.result,.check){border-color:#2f8f87 !important}
+:root[data-theme="dark"] nav .btn:hover{box-shadow:6px 6px 0 #1d6f69,0 0 30px rgba(94,197,189,.3) !important}
+:root[data-theme="dark"] .wrap > header,:root[data-theme="dark"] .hero,:root[data-theme="dark"] header.top{
+  border-color:#2f8f87 !important;box-shadow:0 0 34px rgba(56,170,190,.18)}
+:root[data-theme="dark"] .wrap > header{box-shadow:6px 6px 0 #1d6f69,0 0 34px rgba(56,170,190,.2)}
+:root[data-theme="dark"] .wrap > header::before,:root[data-theme="dark"] .hero::before{opacity:.18 !important}
+:root[data-theme="dark"] .mc svg{filter:drop-shadow(0 0 8px rgba(255,200,120,.25))}
+@media (prefers-reduced-motion:reduce){:root[data-theme="dark"] body::before{animation:none !important}}

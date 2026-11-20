@@ -36,21 +36,39 @@
   });
 
   /* ---------- แพลงก์ตอนเรืองแสง (เฉพาะโหมดมืด) ----------
-     ลอยขึ้นจากด้านล่างทุก 5 วินาที บนจอพร้อมกันไม่เกิน MAX เม็ด อยู่หลังเนื้อหา ไม่รับการคลิก
-     ไม่ทำงานเมื่อผู้ใช้ตั้งค่าลดการเคลื่อนไหว หรือแท็บไม่ได้เปิดอยู่ */
-  var MAX = 14, EVERY = 5000, COLORS = ['#7af0e6', '#5fd0f5', '#5ec5bd', '#c8faff', '#f9a8c9'];
+     - เกิดทุก EVERY มิลลิวินาที (บางครั้ง 2 เม็ด) บนจอพร้อมกันไม่เกิน MAX เม็ด
+     - กระจายทั่วจอ: เกิดได้ทั้งขอบล่างและกลางจอ แล้วค่อย ๆ จางเข้า ไม่ได้เรียงเป็นแถว
+     - มีความลึก: เม็ดเล็กจาง ลอยช้า  เม็ดใหญ่ฟุ้งเบลอแบบโบเก้ ลอยเร็วกว่า
+     - ส่ายซ้ายขวาแบบนุ่ม (ease-in-out) และสว่าง–หรี่ช้า ๆ ไม่เดินเป็นเส้นตรงแข็ง ๆ
+     - อยู่หลังเนื้อหา ไม่รับการคลิก ไม่ทำงานเมื่อตั้งค่าลดการเคลื่อนไหวหรือแท็บไม่ได้เปิด */
+  var MAX = 24, EVERY = 1200, COLORS = ['#7af0e6', '#5fd0f5', '#5ec5bd', '#c8faff', '#f9a8c9', '#b9a6ff'];
   var still = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function rnd(a, b) { return a + Math.random() * (b - a); }
+  function spawn(layer, warm) {
+    if (layer.childElementCount >= MAX) return;
+    var depth = Math.random();                         /* 0 = ไกล (เล็ก จาง ช้า)  1 = ใกล้ (ใหญ่ ฟุ้ง) */
+    var size = 4 + depth * depth * 14, dur = rnd(16, 26) - depth * 6;
+    var p = document.createElement('span'), i = document.createElement('i');
+    p.className = 'pk';
+    p.style.cssText = 'left:' + rnd(-2, 100) + 'vw;top:' + rnd(55, 108) + 'vh;width:' + size + 'px;height:' + size + 'px;' +
+      '--c:' + COLORS[Math.floor(Math.random() * COLORS.length)] + ';--rise:' + (-rnd(45, 115)) + 'vh;' +
+      '--o:' + (0.6 + depth * 0.4).toFixed(2) + ';--blur:' + (depth > .7 ? (depth - .7) * 6 : 0).toFixed(1) + 'px;' +
+      'animation-duration:' + dur + 's;' + (warm ? 'animation-delay:' + (-rnd(0, dur * .8)) + 's;' : '');
+    i.style.cssText = '--dx:' + rnd(10, 38) * (Math.random() < .5 ? -1 : 1) + 'px;animation-duration:' + rnd(3, 6.5) + 's,' + rnd(2.5, 5) + 's';
+    p.appendChild(i);
+    p.addEventListener('animationend', function (e) { if (e.target === p) p.remove(); });
+    layer.appendChild(p);
+  }
   document.addEventListener('DOMContentLoaded', function () {
     if (still) return;
     var layer = document.createElement('div'); layer.className = 'plankton'; layer.setAttribute('aria-hidden', 'true');
     document.body.appendChild(layer);
-    setInterval(function () {
-      if (root.dataset.theme !== 'dark' || document.hidden || layer.childElementCount >= MAX) return;
-      var p = document.createElement('span'), size = 6 + Math.random() * 9, c = COLORS[Math.floor(Math.random() * COLORS.length)];
-      p.style.cssText = 'left:' + (Math.random() * 100) + 'vw;width:' + size + 'px;height:' + size + 'px;--c:' + c +
-        ';--dx:' + ((Math.random() - .5) * 120) + 'px;animation-duration:' + (10 + Math.random() * 7) + 's,' + (2 + Math.random() * 2) + 's';
-      p.addEventListener('animationend', function (e) { if (e.animationName === 't-rise') p.remove(); });
-      layer.appendChild(p);
-    }, EVERY);
+    var warmed = false;
+    function tick() {
+      if (root.dataset.theme !== 'dark' || document.hidden) return;
+      if (!warmed) { warmed = true; for (var k = 0; k < 12; k++) spawn(layer, true); }   /* เปิดมาแล้วมีเลย ไม่ว่างเปล่า */
+      spawn(layer, false); if (Math.random() < .35) spawn(layer, false);
+    }
+    tick(); setInterval(tick, EVERY);
   });
 })();

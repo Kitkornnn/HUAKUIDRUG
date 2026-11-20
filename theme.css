@@ -292,3 +292,4 @@ th{letter-spacing:.2px}
 }
 @keyframes t-sway{from{transform:translateX(calc(var(--dx) * -1))}to{transform:translateX(var(--dx))}}
 @keyframes t-glow{from{opacity:.55}to{opacity:1}}
+:root[data-theme="dark"] .mc.sulk .say{background:#2a0f1a;border-color:#ff8794;color:#ffc2c9;box-shadow:3px 3px 0 #ff8794}

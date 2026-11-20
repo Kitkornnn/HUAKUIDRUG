@@ -1,11 +1,13 @@
 /* mascot.js : มาสคอต 3 ตัว ถือเม็ดยา (ออกแบบขึ้นใหม่เอง ไม่ได้อิงตัวการ์ตูนใด) ใช้เฉพาะหน้าแรก index.html
      โหมดสว่าง: ปลาทอง กุ้ง ปลาดาว   โหมดมืด: ฉลาม แมงกะพรุน ปลาแองเกลอร์
      ว่ายอิสระทั่วจอ ถูกดึงเข้าหากลางจอเบา ๆ
-   เล่นได้: แตะ = เด้งดึ๋ง พูด และมีหัวใจ   แตะรัว 5 ครั้ง = หมุนติ้ว   ลาก = จับย้ายแล้วปล่อยให้ว่ายต่อ
+   เล่นได้: แตะ = เด้งดึ๋ง พูด และมีหัวใจ   แตะรัว 5 ครั้ง = หมุนติ้ว   แตะ 9 ครั้งใน 6 วิ = งอน 9 วิ
+          ลาก = จับย้ายได้ ลากข้ามปุ่มได้ ถ้าปล่อยทับปุ่มจะเลื่อนไปจุดว่างที่ใกล้ที่สุดเอง
 
    กติกาห้ามทับปุ่ม (ตรวจทุกเฟรม)
    - อ่านกรอบของปุ่ม ลิงก์ ช่องกรอก แท็บ หัวเว็บ กล่องหมายเหตุ ทุกเฟรม แล้วกันระยะห่าง 14px
-   - ก้าวถัดไปที่จะทับ จะไม่ถูกเดิน มาสคอตเด้งกลับแทน (ทั้งตอนว่ายเองและตอนผู้ใช้ลาก)
+   - ก้าวถัดไปที่จะทับ จะไม่ถูกเดิน มาสคอตเด้งกลับแทน
+   - ตอนผู้ใช้ลากผ่านปุ่มได้ (ตัวโปร่งแสง) แต่ปล่อยแล้วจะไม่ค้างทับปุ่ม
    - ถ้าหน้าเปลี่ยนจนทับอยู่แล้ว (ย่อจอ เลื่อนหน้า) ย้ายไปจุดว่างที่ใกล้ที่สุดทันที ไม่มีจุดว่างก็ซ่อน
    - กล่องคำพูดแสดงเฉพาะเมื่อไม่ทับปุ่ม หัวใจลอยอยู่ในกรอบของตัวมาสคอตเท่านั้น
    ผู้ใช้ที่ตั้งค่าลดการเคลื่อนไหว: มาสคอตไม่ว่ายเอง แต่ยังแตะและลากได้ */
@@ -144,7 +146,12 @@
   var css = document.createElement('style');
   css.textContent =
     '.mc{position:fixed;left:0;top:0;z-index:60;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;-webkit-tap-highlight-color:transparent}' +
-    '.mc.drag{cursor:grabbing}.mc.off{visibility:hidden;pointer-events:none}' +
+    '.mc.drag{cursor:grabbing}.mc.over{opacity:.55}.mc.snap{transition:transform .25s ease}' +
+    '.mc .fx{position:relative}.mc .mark{position:absolute;right:-4px;top:-10px;font-size:20px;opacity:0;transform:scale(.4);transition:opacity .2s,transform .2s;pointer-events:none}' +
+    '.mc.sulk .mark{opacity:1;transform:scale(1);animation:mc-vein .8s ease-in-out infinite alternate}' +
+    '.mc.sulk .sp{filter:saturate(.5) brightness(.9)}.mc.sulk svg{animation:mc-huff 1.4s ease-in-out infinite}' +
+    '.mc.sulk .say{background:#ffe6eb;border-color:#b9344a;color:#8a1f2c;box-shadow:3px 3px 0 #b9344a}' +
+    '.mc.off{visibility:hidden;pointer-events:none}' +
     '.mc svg{overflow:visible;display:block}.mc .fx{width:var(--w);height:var(--h)}.mc .sp{width:100%;height:100%;transition:transform .35s}.mc .sp.left{transform:scaleX(-1)}' +
     '.mc .fx.boing{animation:mc-boing .6s ease}.mc .fx.spin{animation:mc-spin .9s ease}.mc .fx.pop{animation:mc-pop .35s ease}' +
     '.mc.drag .fx{transform:scale(1.12) rotate(-6deg)}' +
@@ -175,6 +182,8 @@
     '@keyframes mc-tent{from{transform:skewX(-6deg)}to{transform:skewX(6deg) scaleY(.94)}}' +
     '@keyframes mc-bob{from{transform:translateY(0) scale(1,1)}to{transform:translateY(-2px) scale(1.04,.96)}}' +
     '@keyframes mc-lure{from{transform:rotate(-8deg);filter:brightness(1)}to{transform:rotate(8deg);filter:brightness(1.4) drop-shadow(0 0 6px #ffe27a)}}' +
+    '@keyframes mc-vein{from{transform:scale(.85) rotate(-8deg)}to{transform:scale(1.15) rotate(8deg)}}' +
+    '@keyframes mc-huff{0%,100%{transform:translateY(0) rotate(0)}50%{transform:translateY(1px) rotate(-5deg)}}' +
     '@keyframes mc-boing{0%{transform:scale(1)}30%{transform:scale(1.25,.8)}55%{transform:scale(.85,1.2) translateY(-6px)}80%{transform:scale(1.06,.95)}100%{transform:scale(1)}}' +
     '@keyframes mc-spin{from{transform:rotate(0)}to{transform:rotate(720deg)}}' +
     '@keyframes mc-pop{from{transform:scale(.2);opacity:0}to{transform:scale(1);opacity:1}}' +
@@ -237,9 +246,10 @@
     var say = document.createElement('div'); say.className = 'say';
     var fx = document.createElement('div'); fx.className = 'fx';
     var sp = document.createElement('div'); sp.className = 'sp';
-    fx.appendChild(sp); el.appendChild(say); el.appendChild(fx); document.body.appendChild(el);
+    var mark = document.createElement('span'); mark.className = 'mark'; mark.textContent = '💢';
+    fx.appendChild(sp); fx.appendChild(mark); el.appendChild(say); el.appendChild(fx); document.body.appendChild(el);
     var a = { kind: kind, el: el, say: say, fx: fx, sp: sp, W: w, H: h, WS: ws, HS: hs, speed: speed,
-              draw: draw, skin: '', x: 0, y: 0, vx: 0, vy: 0, placed: false, boost: 0, sayOff: 0, nextSay: 0, taps: [], li: 0, drag: null };
+              draw: draw, skin: '', x: 0, y: 0, vx: 0, vy: 0, placed: false, boost: 0, sayOff: 0, nextSay: 0, taps: [], annoy: [], sulkUntil: 0, li: 0, drag: null };
     skin(a); size(a); bindPointer(a); return a;
   }
   function size(a) {
@@ -289,12 +299,39 @@
       a.el.appendChild(hz); setTimeout(function (n) { return function () { n.remove(); }; }(hz), 1300);
     }
   }
+  /* ---------- งอน ----------
+     แตะ SULK_TAPS ครั้งภายใน SULK_WINDOW มิลลิวินาที -> งอน SULK_MS มิลลิวินาที
+     ระหว่างงอน: หน้าบึ้ง สีซีด มีเครื่องหมายโกรธ ว่ายช้าและหนีออกห่าง แตะอีกก็ไม่เล่นด้วย (งอนนานขึ้นอีกนิด) */
+  var SULK_TAPS = 9, SULK_WINDOW = 6000, SULK_MS = 9000;
+  var SULK_START = ['หึ! งอนแล้ว', 'แตะเยอะไปแล้วนะ!', 'ไม่เล่นด้วยแล้ว หึ!'];
+  var SULK_POKE = ['ไม่คุยด้วย!', 'หึ!', 'ยังงอนอยู่นะ', 'อย่ามาง้อ!'];
+  var SULK_END = ['หายงอนแล้ว~ เล่นเบา ๆ นะ', 'โอเค ให้อภัยก็ได้', 'กลับมาเล่นด้วยแล้ว'];
+  function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+  function sulking(a, now) { return a.sulkUntil && now < a.sulkUntil; }
+  function startSulk(a, now) {
+    a.sulkUntil = now + SULK_MS; a.annoy = []; a.taps = [];
+    a.el.classList.add('sulk'); hideSay(a); speak(a, pick(SULK_START), now);
+    if (!reduce) { randomVel(a, 1.8); a.boost = now + 700; }
+  }
+  function endSulk(a, now) {
+    a.sulkUntil = 0; a.el.classList.remove('sulk'); restart(a.fx, 'pop');
+    hideSay(a); speak(a, pick(SULK_END), now); a.nextSay = now + 12000;
+  }
   function onTap(a, now) {
+    if (sulking(a, now)) {                               /* กำลังงอน: ไม่เด้ง ไม่มีหัวใจ งอนนานขึ้นอีกนิด (ไม่เกิน 15 วิ) */
+      a.sulkUntil = Math.min(a.sulkUntil + 1500, now + 15000);
+      hideSay(a); speak(a, pick(SULK_POKE), now);
+      if (!reduce) { randomVel(a, 1.6); a.boost = now + 600; }
+      return;
+    }
+    a.annoy = a.annoy.filter(function (t) { return now - t < SULK_WINDOW; }); a.annoy.push(now);
+    if (a.annoy.length >= SULK_TAPS) { startSulk(a, now); return; }
     a.taps = a.taps.filter(function (t) { return now - t < 2000; }); a.taps.push(now);
     if (a.taps.length >= 5) {
       a.taps = []; restart(a.fx, 'spin'); hideSay(a); speak(a, spinOf(a), now);
     } else {
-      restart(a.fx, 'boing'); hearts(a); hideSay(a); speak(a, linesOf(a)[a.li++ % linesOf(a).length], now);
+      restart(a.fx, 'boing'); hearts(a); hideSay(a);
+      speak(a, a.annoy.length >= SULK_TAPS - 2 ? 'พอได้แล้วน้า จะงอนแล้วนะ' : linesOf(a)[a.li++ % linesOf(a).length], now);
     }
     if (!reduce) { randomVel(a, 2.6); a.boost = now + 1200; }   /* ตกใจ ว่ายหนีเร็วขึ้นชั่วครู่ */
   }
@@ -312,17 +349,26 @@
       d.moved = Math.max(d.moved, Math.hypot(e.clientX - d.sx, e.clientY - d.sy));
       var tx = e.clientX - d.ox, ty = e.clientY - d.oy;
       readObst();
-      /* ลากได้เฉพาะไปจุดที่ว่าง ทับปุ่มไม่ได้: ลองทั้งสองแกน แล้วทีละแกน */
-      if (free(tx, ty, a.w, a.h)) { a.x = tx; a.y = ty; }
-      else { if (free(tx, a.y, a.w, a.h)) a.x = tx; if (free(a.x, ty, a.w, a.h)) a.y = ty; }
+      /* ลากข้ามปุ่มได้ (ขณะผู้ใช้ถืออยู่) แต่จำกัดให้อยู่ในจอ ถ้ากำลังอยู่เหนือปุ่ม ตัวจะโปร่งแสงบอกว่าวางตรงนี้ไม่ได้ */
+      a.x = Math.max(4, Math.min(innerWidth - a.w - 4, tx)); a.y = Math.max(4, Math.min(innerHeight - a.h - 4, ty));
+      a.el.classList.toggle('over', !free(a.x, a.y, a.w, a.h));
       var now = performance.now(), dt = Math.max(16, now - d.lt) / 1000;
       d.vx = (a.x - d.lx) / dt; d.vy = (a.y - d.ly) / dt; d.lx = a.x; d.ly = a.y; d.lt = now;
       put(a);
     });
     function end(e) {
       var d = a.drag; if (!d || e.pointerId !== d.id) return;
-      a.drag = null; a.el.classList.remove('drag');
+      a.drag = null; a.el.classList.remove('drag', 'over');
       var now = performance.now();
+      readObst();
+      if (!free(a.x, a.y, a.w, a.h)) {                   /* ปล่อยทับปุ่ม: เลื่อนไปจุดว่างที่ใกล้จุดปล่อยที่สุด */
+        var spot = findSpot(a, a.x + a.w / 2, a.y + a.h / 2);
+        if (spot) {
+          a.el.classList.add('snap'); a.x = spot.x; a.y = spot.y; put(a);
+          setTimeout(function () { a.el.classList.remove('snap'); }, 260);
+        }
+        d.vx = d.vy = 0;
+      }
       if (d.moved < 8 && now - d.t < 400) onTap(a, now);
       else if (!reduce) {                                  /* ปล่อยแล้วพุ่งต่อตามแรงเหวี่ยง (จำกัดความเร็ว) */
         var sp = Math.hypot(d.vx, d.vy), cap = a.speed * 5;
@@ -370,7 +416,7 @@
         vx += Math.sign(cx - (a.x + a.w / 2)) * 14 * dt;
         vy += Math.sign(cy - (a.y + a.h / 2)) * 6 * dt;
         if (a.kind === 'fish') vy = Math.max(-a.speed * .45, Math.min(a.speed * .45, vy));
-        var spd = Math.hypot(vx, vy) || 1, target = a.speed * (now < a.boost ? 2.4 : 1);
+        var spd = Math.hypot(vx, vy) || 1, target = a.speed * (now < a.boost ? 2.4 : 1) * (sulking(a, now) ? .55 : 1);
         var f = 1 + (target / spd - 1) * Math.min(1, dt * 2.5); vx *= f; vy *= f;
         a.vx = vx; a.vy = vy;
         /* เดินทีละแกน ก้าวไหนจะทับปุ่มหรือออกนอกจอ ไม่เดิน แต่เด้งกลับ */
@@ -394,15 +440,16 @@
     }
     all.forEach(function (a) {
       /* ตรวจซ้ำทุกเฟรม: ถ้าทับ (หน้าเปลี่ยน/เลื่อน) ย้ายไปจุดว่างใกล้สุด ไม่มีที่ว่างก็ซ่อน */
+      if (a.drag) { put(a); return; }                   /* ผู้ใช้กำลังถืออยู่ ปล่อยแล้วค่อยหาที่วาง */
+      if (a.sulkUntil && now > a.sulkUntil) endSulk(a, now);
       if (!free(a.x, a.y, a.w, a.h)) {
-        if (a.drag) { a.drag = null; a.el.classList.remove('drag'); }
         var s = findSpot(a, a.x + a.w / 2, a.y + a.h / 2);
         if (s) { a.x = s.x; a.y = s.y; a.placed = true; show(a, true); restart(a.fx, 'pop'); }
         else { a.placed = false; show(a, false); }
       } else if (!a.placed) { a.placed = true; show(a, true); }
       put(a);
       if (a.say.classList.contains('on') && (now > a.sayOff || !sayBoxFree(a))) hideSay(a);
-      if (a.placed && !a.drag && a.nextSay && now > a.nextSay) {
+      if (a.placed && !a.drag && !sulking(a, now) && a.nextSay && now > a.nextSay) {
         speak(a, linesOf(a)[a.li++ % linesOf(a).length], now);
         a.nextSay = now + 12000 + Math.random() * 6000;
       }
